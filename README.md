@@ -16,6 +16,9 @@
 | ツール / Tool | 説明 / Description | ページ / Page |
 |---|---|---|
 | 文字数カウンター | 文字数・バイト数・単語数・行数をリアルタイム計測 | [/character-count](https://tool-nest.pages.dev/character-count) |
+| JSONフォーマッター | JSONの整形・圧縮・構文チェック。インデント幅選択対応 | [/json-formatter](https://tool-nest.pages.dev/json-formatter) |
+| Base64変換 | テキストのBase64エンコード/デコード。日本語・URL-safe対応 | [/base64](https://tool-nest.pages.dev/base64) |
+| UUID生成 | UUIDv4を最大20個一括生成。大文字/小文字切替・一括コピー | [/uuid-generator](https://tool-nest.pages.dev/uuid-generator) |
 | 西暦・和暦変換 | 西暦と和暦（令和・平成・昭和・大正・明治）を相互変換 | [/wareki](https://tool-nest.pages.dev/wareki) |
 | 日本の祝日計算 | 指定年の祝日一覧を計算。ハッピーマンデー・振替休日対応 | [/japan-holidays](https://tool-nest.pages.dev/japan-holidays) |
 | 営業日計算 | 期間の営業日数を計算。祝日リスト貼り付け・土曜除外オプション付き | [/business-days](https://tool-nest.pages.dev/business-days) |

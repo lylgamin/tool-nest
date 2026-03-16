@@ -2,10 +2,10 @@ import Link from "next/link";
 
 const CATEGORIES = [
   { id: "text", label: "テキスト", icon: "Tt", count: 1 },
-  { id: "encode", label: "エンコード", icon: "{}", count: 0 },
-  { id: "format", label: "フォーマット", icon: "<>", count: 0 },
+  { id: "encode", label: "エンコード", icon: "{}", count: 1 },
+  { id: "format", label: "フォーマット", icon: "<>", count: 1 },
   { id: "convert", label: "変換", icon: "⇄", count: 4 },
-  { id: "generate", label: "生成", icon: "✦", count: 0 },
+  { id: "generate", label: "生成", icon: "✦", count: 1 },
   { id: "calc", label: "計算", icon: "#", count: 4 },
 ];
 
@@ -23,19 +23,28 @@ const TOOLS = [
     id: "json-formatter",
     title: "JSONフォーマッター",
     description:
-      "JSONの整形・圧縮・構文チェックができます。シンタックスハイライト付き。",
+      "JSONの整形・圧縮・構文チェックができます。インデント幅を2/4スペース・タブから選択可能。",
     category: "format",
-    href: null,
-    ready: false,
+    href: "/json-formatter",
+    ready: true,
   },
   {
     id: "base64",
     title: "Base64変換",
     description:
-      "テキストやファイルをBase64でエンコード・デコードできます。",
+      "テキストをBase64でエンコード・デコードできます。日本語（UTF-8）・URL-safe形式に対応。",
     category: "encode",
-    href: null,
-    ready: false,
+    href: "/base64",
+    ready: true,
+  },
+  {
+    id: "uuid-generator",
+    title: "UUID生成",
+    description:
+      "UUIDv4を最大20個まで一括生成。大文字/小文字切替・個別コピー・全件コピーに対応。",
+    category: "generate",
+    href: "/uuid-generator",
+    ready: true,
   },
   {
     id: "url-encode",
