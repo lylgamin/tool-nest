@@ -9,6 +9,10 @@ const tools = [
   { path: '/wareki',           lastModified: new Date('2026-03-16') },
   { path: '/japan-holidays',   lastModified: new Date('2026-03-16') },
   { path: '/business-days',    lastModified: new Date('2026-03-16') },
+  { path: '/rokujukkanshi',    lastModified: new Date('2026-03-16') },
+  { path: '/unix-time',        lastModified: new Date('2026-03-16') },
+  { path: '/timezone',         lastModified: new Date('2026-03-16') },
+  { path: '/day-of-year',      lastModified: new Date('2026-03-16') },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
