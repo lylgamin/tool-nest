@@ -4,9 +4,9 @@ const CATEGORIES = [
   { id: "text", label: "テキスト", icon: "Tt", count: 1 },
   { id: "encode", label: "エンコード", icon: "{}", count: 0 },
   { id: "format", label: "フォーマット", icon: "<>", count: 0 },
-  { id: "convert", label: "変換", icon: "⇄", count: 0 },
+  { id: "convert", label: "変換", icon: "⇄", count: 1 },
   { id: "generate", label: "生成", icon: "✦", count: 0 },
-  { id: "calc", label: "計算", icon: "#", count: 0 },
+  { id: "calc", label: "計算", icon: "#", count: 2 },
 ];
 
 const TOOLS = [
@@ -63,6 +63,30 @@ const TOOLS = [
     category: "convert",
     href: null,
     ready: false,
+  },
+  {
+    id: "wareki",
+    title: "西暦・和暦変換",
+    description: "西暦（グレゴリオ暦）と和暦（令和・平成・昭和・大正・明治）を相互変換。元号境界を正確に処理。",
+    category: "convert",
+    href: "/wareki",
+    ready: true,
+  },
+  {
+    id: "japan-holidays",
+    title: "日本の祝日計算",
+    description: "指定した年の祝日一覧を計算します。ハッピーマンデー・振替休日・国民の祝日に対応。",
+    category: "calc",
+    href: "/japan-holidays",
+    ready: true,
+  },
+  {
+    id: "business-days",
+    title: "営業日計算",
+    description: "期間の営業日数を計算します。祝日リスト貼り付け・土曜除外オプション付き。",
+    category: "calc",
+    href: "/business-days",
+    ready: true,
   },
 ];
 

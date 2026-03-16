@@ -182,7 +182,7 @@ export default function CharacterCountPage() {
           MITライセンスで自由に利用・改変できます。
         </p>
         <a
-          href="https://github.com/lylgamin/tool-nest/tree/main/tool-nest/app/character-count"
+          href="https://github.com/lylgamin/tool-nest/tree/main/app/character-count"
           target="_blank"
           rel="noopener noreferrer"
           style={{
