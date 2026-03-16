@@ -13,6 +13,9 @@ const tools = [
   { path: '/unix-time',        lastModified: new Date('2026-03-16') },
   { path: '/timezone',         lastModified: new Date('2026-03-16') },
   { path: '/day-of-year',      lastModified: new Date('2026-03-16') },
+  { path: '/json-formatter',   lastModified: new Date('2026-03-16') },
+  { path: '/base64',           lastModified: new Date('2026-03-16') },
+  { path: '/uuid-generator',   lastModified: new Date('2026-03-16') },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
