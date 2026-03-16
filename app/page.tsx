@@ -1,65 +1,413 @@
-import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+const CATEGORIES = [
+  { id: "text", label: "テキスト", icon: "Tt", count: 1 },
+  { id: "encode", label: "エンコード", icon: "{}", count: 0 },
+  { id: "format", label: "フォーマット", icon: "<>", count: 0 },
+  { id: "convert", label: "変換", icon: "⇄", count: 0 },
+  { id: "generate", label: "生成", icon: "✦", count: 0 },
+  { id: "calc", label: "計算", icon: "#", count: 0 },
+];
+
+const TOOLS = [
+  {
+    id: "character-count",
+    title: "文字数カウンター",
+    description:
+      "文字数・バイト数・単語数・行数をリアルタイムで確認できます。日本語（UTF-8）のバイト数にも対応しています。",
+    category: "text",
+    href: "/character-count",
+    ready: true,
+  },
+  {
+    id: "json-formatter",
+    title: "JSONフォーマッター",
+    description:
+      "JSONの整形・圧縮・構文チェックができます。シンタックスハイライト付き。",
+    category: "format",
+    href: null,
+    ready: false,
+  },
+  {
+    id: "base64",
+    title: "Base64変換",
+    description:
+      "テキストやファイルをBase64でエンコード・デコードできます。",
+    category: "encode",
+    href: null,
+    ready: false,
+  },
+  {
+    id: "url-encode",
+    title: "URLエンコード",
+    description:
+      "URLをパーセントエンコーディングでエンコード・デコードできます。",
+    category: "encode",
+    href: null,
+    ready: false,
+  },
+  {
+    id: "hash",
+    title: "ハッシュ生成",
+    description:
+      "MD5・SHA-1・SHA-256・SHA-512のハッシュ値を生成できます。",
+    category: "generate",
+    href: null,
+    ready: false,
+  },
+  {
+    id: "unix-time",
+    title: "UNIXタイム変換",
+    description:
+      "UNIXタイムスタンプと日時（年月日時分秒）を相互に変換できます。",
+    category: "convert",
+    href: null,
+    ready: false,
+  },
+];
+
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main>
+      {/* Hero */}
+      <section
+        style={{
+          maxWidth: "860px",
+          margin: "0 auto",
+          padding: "5rem 1.5rem 4rem",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "var(--font-jetbrains), monospace",
+            fontSize: "10px",
+            letterSpacing: "0.18em",
+            color: "var(--teal)",
+            textTransform: "uppercase",
+            marginBottom: "1rem",
+          }}
+        >
+          developer utilities
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        <h1
+          style={{
+            fontFamily: "var(--font-cormorant), serif",
+            fontSize: "clamp(2.5rem, 8vw, 4.5rem)",
+            fontWeight: 500,
+            color: "var(--ink)",
+            lineHeight: 1.05,
+            margin: "0 0 1.25rem",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Tools for
+          <br />
+          <em style={{ fontStyle: "italic", color: "var(--navy)" }}>
+            developers
+          </em>
+        </h1>
+
+        <p
+          style={{
+            fontFamily: "var(--font-noto-sans), sans-serif",
+            fontSize: "15px",
+            color: "var(--ink-mid)",
+            lineHeight: 1.8,
+            maxWidth: "480px",
+            margin: "0 auto 2.5rem",
+          }}
+        >
+          JSONフォーマッターや文字数カウンターなど、よく使う開発ツールをブラウザだけで手軽に使えます。入力した内容はサーバーに送信されません。
+        </p>
+
+        {/* 検索ボックス (visual only) */}
+        <div
+          style={{
+            maxWidth: "400px",
+            margin: "0 auto 3rem",
+            position: "relative",
+          }}
+        >
+          <input
+            type="search"
+            placeholder="ツールを検索... (例: JSON, Base64)"
+            style={{
+              width: "100%",
+              padding: "10px 16px",
+              paddingLeft: "40px",
+              backgroundColor: "var(--surface-alt)",
+              border: "1px solid var(--border)",
+              borderRadius: "4px",
+              fontFamily: "var(--font-noto-sans), sans-serif",
+              fontSize: "13px",
+              color: "var(--ink)",
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+          <span
+            style={{
+              position: "absolute",
+              left: "14px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              fontFamily: "var(--font-jetbrains), monospace",
+              fontSize: "13px",
+              color: "var(--ink-faint)",
+              pointerEvents: "none",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            /
+          </span>
         </div>
-      </main>
+
+        {/* 統計 */}
+        <div style={{ display: "flex", justifyContent: "center", gap: "3rem" }}>
+          {[
+            { value: "50+", label: "ツール（予定）" },
+            { value: "6", label: "カテゴリ" },
+            { value: "0", label: "サーバー通信" },
+          ].map(({ value, label }) => (
+            <div key={label} style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  fontFamily: "var(--font-jetbrains), monospace",
+                  fontSize: "22px",
+                  fontWeight: 400,
+                  color: "var(--navy)",
+                }}
+              >
+                {value}
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-noto-sans), sans-serif",
+                  fontSize: "11px",
+                  color: "var(--ink-light)",
+                  marginTop: "2px",
+                }}
+              >
+                {label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* カテゴリグリッド */}
+      <section
+        id="categories"
+        style={{
+          maxWidth: "1100px",
+          margin: "0 auto",
+          padding: "0 1.5rem 3rem",
+        }}
+      >
+        <div style={{ marginBottom: "1.5rem" }}>
+          <h2
+            style={{
+              fontFamily: "var(--font-noto-serif), serif",
+              fontSize: "16px",
+              fontWeight: 600,
+              color: "var(--ink)",
+              margin: 0,
+            }}
+          >
+            カテゴリ
+          </h2>
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+            gap: "0.75rem",
+          }}
+        >
+          {CATEGORIES.map((cat) => (
+            <div
+              key={cat.id}
+              style={{
+                backgroundColor: "var(--surface)",
+                border: "1px solid var(--border-light)",
+                borderRadius: "4px",
+                padding: "1rem",
+                textAlign: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-jetbrains), monospace",
+                  fontSize: "16px",
+                  color: "var(--navy)",
+                  marginBottom: "6px",
+                }}
+              >
+                {cat.icon}
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-noto-sans), sans-serif",
+                  fontSize: "13px",
+                  color: "var(--ink-mid)",
+                }}
+              >
+                {cat.label}
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-jetbrains), monospace",
+                  fontSize: "9px",
+                  color: "var(--ink-faint)",
+                  letterSpacing: "0.1em",
+                  marginTop: "3px",
+                }}
+              >
+                {cat.count} tools
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ツールカード一覧 */}
+      <section
+        style={{
+          maxWidth: "1100px",
+          margin: "0 auto",
+          padding: "0 1.5rem 6rem",
+        }}
+      >
+        <div style={{ marginBottom: "1.5rem" }}>
+          <h2
+            style={{
+              fontFamily: "var(--font-noto-serif), serif",
+              fontSize: "16px",
+              fontWeight: 600,
+              color: "var(--ink)",
+              margin: 0,
+            }}
+          >
+            すべてのツール
+          </h2>
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: "1rem",
+          }}
+        >
+          {TOOLS.map((tool) => (
+            <ToolCard key={tool.id} {...tool} />
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function ToolCard({
+  title,
+  description,
+  category,
+  href,
+  ready,
+}: {
+  title: string;
+  description: string;
+  category: string;
+  href: string | null;
+  ready: boolean;
+}) {
+  const cardStyle = {
+    backgroundColor: "var(--surface)",
+    border: "1px solid var(--border-light)",
+    borderRadius: "4px",
+    padding: "1.25rem",
+    display: "block",
+    textDecoration: "none",
+    opacity: ready ? 1 : 0.55,
+    cursor: ready ? "pointer" : "default",
+    position: "relative" as const,
+    overflow: "hidden" as const,
+  };
+
+  const inner = (
+    <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          marginBottom: "8px",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "var(--font-noto-sans), sans-serif",
+            fontSize: "14px",
+            fontWeight: 500,
+            color: "var(--ink)",
+          }}
+        >
+          {title}
+        </div>
+        {!ready && (
+          <span
+            style={{
+              fontFamily: "var(--font-jetbrains), monospace",
+              fontSize: "9px",
+              letterSpacing: "0.1em",
+              color: "var(--ink-faint)",
+              border: "1px solid var(--border-light)",
+              borderRadius: "2px",
+              padding: "2px 6px",
+              whiteSpace: "nowrap" as const,
+              marginLeft: "8px",
+            }}
+          >
+            準備中
+          </span>
+        )}
+      </div>
+      <p
+        style={{
+          fontFamily: "var(--font-noto-sans), sans-serif",
+          fontSize: "12px",
+          color: "var(--ink-light)",
+          lineHeight: 1.6,
+          margin: "0 0 0.75rem",
+        }}
+      >
+        {description}
+      </p>
+      <div
+        style={{
+          fontFamily: "var(--font-jetbrains), monospace",
+          fontSize: "9px",
+          letterSpacing: "0.12em",
+          color: "var(--ink-faint)",
+          textTransform: "uppercase" as const,
+        }}
+      >
+        {category}
+      </div>
+    </>
+  );
+
+  if (ready && href) {
+    return (
+      <Link href={href} style={cardStyle} aria-label={title}>
+        {inner}
+      </Link>
+    );
+  }
+
+  return (
+    <div style={cardStyle} aria-disabled="true">
+      {inner}
     </div>
   );
 }
