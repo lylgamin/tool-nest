@@ -19,6 +19,10 @@
 | 西暦・和暦変換 | 西暦と和暦（令和・平成・昭和・大正・明治）を相互変換 | [/wareki](https://tool-nest.pages.dev/wareki) |
 | 日本の祝日計算 | 指定年の祝日一覧を計算。ハッピーマンデー・振替休日対応 | [/japan-holidays](https://tool-nest.pages.dev/japan-holidays) |
 | 営業日計算 | 期間の営業日数を計算。祝日リスト貼り付け・土曜除外オプション付き | [/business-days](https://tool-nest.pages.dev/business-days) |
+| 六十干支計算 | 西暦から十干・十二支（六十干支）と読みを計算。60年サイクル一覧付き | [/rokujukkanshi](https://tool-nest.pages.dev/rokujukkanshi) |
+| UNIXタイムスタンプ変換 | UNIXタイムスタンプと日時（UTC/JST）を相互変換 | [/unix-time](https://tool-nest.pages.dev/unix-time) |
+| タイムゾーン変換 | 日時をUTC・JST・EST等8タイムゾーンに一括変換 | [/timezone](https://tool-nest.pages.dev/timezone) |
+| 経過日数・週数計算 | 年間の経過日数・残り日数・進捗・ISO週番号を計算 | [/day-of-year](https://tool-nest.pages.dev/day-of-year) |
 
 新しいツールは随時追加予定です。 / More tools coming soon.
 
