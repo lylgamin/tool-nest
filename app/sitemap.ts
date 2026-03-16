@@ -5,7 +5,10 @@ import type { MetadataRoute } from 'next'
 const BASE_URL = 'https://tool-nest.pages.dev'
 
 const tools = [
-  { path: '/character-count', lastModified: new Date('2026-03-16') },
+  { path: '/character-count',  lastModified: new Date('2026-03-16') },
+  { path: '/wareki',           lastModified: new Date('2026-03-16') },
+  { path: '/japan-holidays',   lastModified: new Date('2026-03-16') },
+  { path: '/business-days',    lastModified: new Date('2026-03-16') },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
