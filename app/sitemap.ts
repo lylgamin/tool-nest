@@ -19,6 +19,9 @@ const tools = [
   { path: '/url-encode',       lastModified: new Date('2026-03-17') },
   { path: '/html-escape',      lastModified: new Date('2026-03-17') },
   { path: '/hash',             lastModified: new Date('2026-03-17') },
+  { path: '/zenkaku-hankaku', lastModified: new Date('2026-03-17') },
+  { path: '/camel-case',      lastModified: new Date('2026-03-17') },
+  { path: '/kebab-case',      lastModified: new Date('2026-03-17') },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -74,6 +74,33 @@ const TOOLS = [
     ready: true,
   },
   {
+    id: "zenkaku-hankaku",
+    title: "全角・半角変換",
+    description:
+      "英数字・記号・カタカナ（濁音・半濁音含む）を全角⇔半角に変換します。データ正規化に。",
+    category: "encode",
+    href: "/zenkaku-hankaku",
+    ready: true,
+  },
+  {
+    id: "camel-case",
+    title: "キャメルケース変換",
+    description:
+      "snake_case・kebab-case・スペース区切りなどをcamelCase / PascalCaseに変換します。",
+    category: "convert",
+    href: "/camel-case",
+    ready: true,
+  },
+  {
+    id: "kebab-case",
+    title: "ケバブ・スネークケース変換",
+    description:
+      "camelCase・PascalCase・スペース区切りなどをkebab-case / snake_caseに変換します。",
+    category: "convert",
+    href: "/kebab-case",
+    ready: true,
+  },
+  {
     id: "unix-time",
     title: "UNIXタイム変換",
     description:
