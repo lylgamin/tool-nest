@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import OgpPreviewTool from './_components/OgpPreviewTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'OGPメタタグ プレビュー',
@@ -111,6 +112,8 @@ export default function OgpPreviewPage() {
       }}>
         <OgpPreviewTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

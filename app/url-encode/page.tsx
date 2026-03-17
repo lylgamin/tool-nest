@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import UrlEncodeToolClient from './_components/UrlEncodeToolClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'URLエンコード/デコード',
@@ -95,6 +96,8 @@ export default function UrlEncodePage() {
       }}>
         <UrlEncodeToolClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

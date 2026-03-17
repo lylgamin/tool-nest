@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import HtmlEscapeToolClient from './_components/HtmlEscapeToolClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'HTMLエスケープ / アンエスケープ',
@@ -98,6 +99,8 @@ export default function HtmlEscapePage() {
       }}>
         <HtmlEscapeToolClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

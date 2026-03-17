@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import QrGeneratorTool from './_components/QrGeneratorTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'QRコード生成',
@@ -103,6 +104,8 @@ export default function QrGeneratorPage() {
       }}>
         <QrGeneratorTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

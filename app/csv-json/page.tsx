@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import CsvJsonTool from './_components/CsvJsonTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'CSV ↔ JSON 変換',
@@ -118,6 +119,8 @@ export default function CsvJsonPage() {
       }}>
         <CsvJsonTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

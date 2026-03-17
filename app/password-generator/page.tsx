@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import PasswordGeneratorClient from './_components/PasswordGeneratorClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'パスワード生成 — ランダムパスワードをブラウザで生成',
@@ -136,6 +137,8 @@ export default function PasswordGeneratorPage() {
       }}>
         <PasswordGeneratorClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

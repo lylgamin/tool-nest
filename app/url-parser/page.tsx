@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import UrlParserClient from './_components/UrlParserClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'URLパーサー — URL分解・クエリパラメータ解析',
@@ -120,6 +121,8 @@ export default function UrlParserPage() {
       }}>
         <UrlParserClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

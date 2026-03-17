@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import ByteConverterClient from './_components/ByteConverterClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'Byte単位変換 — B/KB/MB/GB/TB 換算',
@@ -125,6 +126,8 @@ export default function ByteConverterPage() {
       }}>
         <ByteConverterClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

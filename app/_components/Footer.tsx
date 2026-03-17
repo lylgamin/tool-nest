@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 const BROWSER_SUPPORT = [
   { name: 'Chrome',  version: '80+' },
   { name: 'Edge',    version: '80+' },
@@ -46,14 +48,26 @@ export default function Footer() {
             ))}
           </div>
 
-          {/* コピーライト */}
+          {/* コピーライト + ポリシーリンク */}
           <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
             fontFamily: 'var(--font-jetbrains), monospace',
             fontSize: '10px',
             color: 'var(--ink-faint)',
             letterSpacing: '0.06em',
           }}>
-            © {new Date().getFullYear()} tool-nest
+            <Link
+              href="/privacy"
+              style={{
+                color: 'var(--ink-light)',
+                textDecoration: 'none',
+              }}
+            >
+              プライバシーポリシー
+            </Link>
+            <span>© {new Date().getFullYear()} tool-nest</span>
           </div>
         </div>
       </div>

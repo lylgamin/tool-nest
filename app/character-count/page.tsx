@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import CharacterCountTool from './_components/CharacterCountTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: '文字数カウンター',
@@ -91,6 +92,8 @@ export default function CharacterCountPage() {
       }}>
         <CharacterCountTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 
 const CATEGORIES = [
   { id: "text", label: "テキスト", icon: "Tt", count: 3 },
@@ -347,9 +347,41 @@ const TOOLS = [
   },
 ];
 
+// ピン止め状態をlocalStorageで管理するフック
+function usePins() {
+  const [pins, setPins] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("tool_nest_pins");
+      if (saved) setPins(new Set(JSON.parse(saved) as string[]));
+    } catch {}
+  }, []);
+
+  const toggle = useCallback((id: string) => {
+    setPins((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      try {
+        localStorage.setItem("tool_nest_pins", JSON.stringify([...next]));
+      } catch {}
+      return next;
+    });
+  }, []);
+
+  return { pins, toggle };
+}
+
 export default function HomePage() {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const { pins, toggle } = usePins();
+
+  const pinnedTools = useMemo(
+    () => TOOLS.filter((t) => t.ready && pins.has(t.id)),
+    [pins]
+  );
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase();
@@ -582,6 +614,67 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ピン止めセクション（1件以上の場合のみ表示） */}
+      {pinnedTools.length > 0 && (
+        <section
+          style={{
+            maxWidth: "1100px",
+            margin: "0 auto",
+            padding: "0 1.5rem 3rem",
+          }}
+        >
+          <div
+            style={{
+              marginBottom: "1.5rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: "var(--font-noto-serif), serif",
+                fontSize: "16px",
+                fontWeight: 600,
+                color: "var(--ink)",
+                margin: 0,
+              }}
+            >
+              ピン止め
+            </h2>
+            <span
+              style={{
+                fontFamily: "var(--font-jetbrains), monospace",
+                fontSize: "10px",
+                color: "var(--teal)",
+                letterSpacing: "0.1em",
+                border: "1px solid var(--teal)",
+                borderRadius: "2px",
+                padding: "1px 6px",
+              }}
+            >
+              {pinnedTools.length}
+            </span>
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "1rem",
+            }}
+          >
+            {pinnedTools.map((tool) => (
+              <ToolCard
+                key={tool.id}
+                {...tool}
+                isPinned
+                onTogglePin={() => toggle(tool.id)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* ツールカード一覧 */}
       <section
         style={{
@@ -643,7 +736,12 @@ export default function HomePage() {
             }}
           >
             {filtered.map((tool) => (
-              <ToolCard key={tool.id} {...tool} />
+              <ToolCard
+                key={tool.id}
+                {...tool}
+                isPinned={pins.has(tool.id)}
+                onTogglePin={() => toggle(tool.id)}
+              />
             ))}
           </div>
         )}
@@ -653,28 +751,36 @@ export default function HomePage() {
 }
 
 function ToolCard({
+  id,
   title,
   description,
   category,
   href,
   ready,
+  isPinned,
+  onTogglePin,
 }: {
+  id: string;
   title: string;
   description: string;
   category: string;
   href: string | null;
   ready: boolean;
+  isPinned: boolean;
+  onTogglePin: () => void;
 }) {
+  void id;
+
   const cardStyle = {
     backgroundColor: "var(--surface)",
     border: "1px solid var(--border-light)",
     borderRadius: "4px",
     padding: "1.25rem",
+    paddingRight: "2.75rem", // ピンボタンの分のスペース
     display: "block",
     textDecoration: "none",
     opacity: ready ? 1 : 0.55,
     cursor: ready ? "pointer" : "default",
-    position: "relative" as const,
     overflow: "hidden" as const,
   };
 
@@ -682,9 +788,6 @@ function ToolCard({
     <>
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
           marginBottom: "8px",
         }}
       >
@@ -694,27 +797,30 @@ function ToolCard({
             fontSize: "14px",
             fontWeight: 500,
             color: "var(--ink)",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
           }}
         >
           {title}
+          {!ready && (
+            <span
+              style={{
+                fontFamily: "var(--font-jetbrains), monospace",
+                fontSize: "9px",
+                letterSpacing: "0.1em",
+                color: "var(--ink-faint)",
+                border: "1px solid var(--border-light)",
+                borderRadius: "2px",
+                padding: "2px 6px",
+                whiteSpace: "nowrap" as const,
+                flexShrink: 0,
+              }}
+            >
+              準備中
+            </span>
+          )}
         </div>
-        {!ready && (
-          <span
-            style={{
-              fontFamily: "var(--font-jetbrains), monospace",
-              fontSize: "9px",
-              letterSpacing: "0.1em",
-              color: "var(--ink-faint)",
-              border: "1px solid var(--border-light)",
-              borderRadius: "2px",
-              padding: "2px 6px",
-              whiteSpace: "nowrap" as const,
-              marginLeft: "8px",
-            }}
-          >
-            準備中
-          </span>
-        )}
       </div>
       <p
         style={{
@@ -741,17 +847,52 @@ function ToolCard({
     </>
   );
 
-  if (ready && href) {
-    return (
+  const card =
+    ready && href ? (
       <Link href={href} style={cardStyle} aria-label={title}>
         {inner}
       </Link>
+    ) : (
+      <div style={cardStyle} aria-disabled="true">
+        {inner}
+      </div>
     );
-  }
 
   return (
-    <div style={cardStyle} aria-disabled="true">
-      {inner}
+    <div style={{ position: "relative" }}>
+      {card}
+      {ready && (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onTogglePin();
+          }}
+          aria-label={isPinned ? "ピン解除" : "ピン止め"}
+          title={isPinned ? "ピン解除" : "ピン止め"}
+          style={{
+            position: "absolute",
+            top: "0.875rem",
+            right: "0.875rem",
+            width: "24px",
+            height: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+            color: isPinned ? "var(--teal)" : "var(--ink-faint)",
+            fontSize: "14px",
+            lineHeight: 1,
+            transition: "color 0.15s",
+            borderRadius: "3px",
+          }}
+        >
+          {isPinned ? "★" : "☆"}
+        </button>
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import HttpStatusClient from './_components/HttpStatusClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'HTTPステータスコード一覧',
@@ -84,6 +85,8 @@ export default function HttpStatusPage() {
       }}>
         <HttpStatusClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

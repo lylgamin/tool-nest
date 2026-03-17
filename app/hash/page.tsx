@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import HashToolClient from './_components/HashToolClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'SHA-256/512 ハッシュ生成',
@@ -92,6 +93,8 @@ export default function HashPage() {
       }}>
         <HashToolClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
