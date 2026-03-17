@@ -1,10 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useMemo } from "react";
 
 const CATEGORIES = [
   { id: "text", label: "テキスト", icon: "Tt", count: 2 },
-  { id: "encode", label: "エンコード", icon: "{}", count: 4 },
-  { id: "format", label: "フォーマット", icon: "<>", count: 2 },
-  { id: "convert", label: "変換", icon: "⇄", count: 4 },
+  { id: "encode", label: "エンコード", icon: "{}", count: 6 },
+  { id: "format", label: "フォーマット", icon: "<>", count: 1 },
+  { id: "convert", label: "変換", icon: "⇄", count: 7 },
   { id: "generate", label: "生成", icon: "✦", count: 2 },
   { id: "calc", label: "計算", icon: "#", count: 4 },
   { id: "ref", label: "リファレンス", icon: "?", count: 1 },
@@ -182,9 +185,53 @@ const TOOLS = [
     href: "/http-status",
     ready: true,
   },
+  {
+    id: "number-base",
+    title: "進数変換",
+    description: "10進・2進・8進・16進を相互に変換。ビット演算や組み込みデバッグに。",
+    category: "convert",
+    href: "/number-base",
+    ready: true,
+  },
+  {
+    id: "url-parser",
+    title: "URLパーサー",
+    description: "URLをプロトコル・ホスト・パス・クエリパラメータに分解して表示。デバッグに便利。",
+    category: "encode",
+    href: "/url-parser",
+    ready: true,
+  },
+  {
+    id: "byte-converter",
+    title: "Byte単位変換",
+    description: "B・KB・MB・GB・TB を相互変換。SI（10進）と IEC（2進・1024）の両方に対応。",
+    category: "calc",
+    href: "/byte-converter",
+    ready: true,
+  },
 ];
 
 export default function HomePage() {
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  const filtered = useMemo(() => {
+    const q = query.toLowerCase();
+    return TOOLS.filter((tool) => {
+      const matchesQuery =
+        q === "" ||
+        tool.title.toLowerCase().includes(q) ||
+        tool.description.toLowerCase().includes(q);
+      const matchesCategory =
+        activeCategory === null || tool.category === activeCategory;
+      return matchesQuery && matchesCategory;
+    });
+  }, [query, activeCategory]);
+
+  const handleCategoryClick = (id: string) => {
+    setActiveCategory((prev) => (prev === id ? null : id));
+  };
+
   return (
     <main>
       {/* Hero */}
@@ -240,7 +287,7 @@ export default function HomePage() {
           JSONフォーマッターや文字数カウンターなど、よく使う開発ツールをブラウザだけで手軽に使えます。入力した内容はサーバーに送信されません。
         </p>
 
-        {/* 検索ボックス (visual only) */}
+        {/* 検索ボックス */}
         <div
           style={{
             maxWidth: "400px",
@@ -251,6 +298,8 @@ export default function HomePage() {
           <input
             type="search"
             placeholder="ツールを検索... (例: JSON, Base64)"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             style={{
               width: "100%",
               padding: "10px 16px",
@@ -285,7 +334,7 @@ export default function HomePage() {
         <div style={{ display: "flex", justifyContent: "center", gap: "3rem" }}>
           {[
             { value: "50+", label: "ツール（予定）" },
-            { value: "6", label: "カテゴリ" },
+            { value: "7", label: "カテゴリ" },
             { value: "0", label: "サーバー通信" },
           ].map(({ value, label }) => (
             <div key={label} style={{ textAlign: "center" }}>
@@ -343,49 +392,57 @@ export default function HomePage() {
             gap: "0.75rem",
           }}
         >
-          {CATEGORIES.map((cat) => (
-            <div
-              key={cat.id}
-              style={{
-                backgroundColor: "var(--surface)",
-                border: "1px solid var(--border-light)",
-                borderRadius: "4px",
-                padding: "1rem",
-                textAlign: "center",
-              }}
-            >
+          {CATEGORIES.map((cat) => {
+            const isActive = activeCategory === cat.id;
+            return (
               <div
+                key={cat.id}
+                onClick={() => handleCategoryClick(cat.id)}
                 style={{
-                  fontFamily: "var(--font-jetbrains), monospace",
-                  fontSize: "16px",
-                  color: "var(--navy)",
-                  marginBottom: "6px",
+                  backgroundColor: isActive ? "var(--teal-mid)" : "var(--surface)",
+                  border: isActive
+                    ? "2px solid var(--teal)"
+                    : "1px solid var(--border-light)",
+                  borderRadius: "4px",
+                  padding: isActive ? "calc(1rem - 1px)" : "1rem",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  transition: "border 0.15s, background-color 0.15s",
                 }}
               >
-                {cat.icon}
+                <div
+                  style={{
+                    fontFamily: "var(--font-jetbrains), monospace",
+                    fontSize: "16px",
+                    color: "var(--navy)",
+                    marginBottom: "6px",
+                  }}
+                >
+                  {cat.icon}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-noto-sans), sans-serif",
+                    fontSize: "13px",
+                    color: "var(--ink-mid)",
+                  }}
+                >
+                  {cat.label}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-jetbrains), monospace",
+                    fontSize: "9px",
+                    color: "var(--ink-faint)",
+                    letterSpacing: "0.1em",
+                    marginTop: "3px",
+                  }}
+                >
+                  {cat.count} tools
+                </div>
               </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-noto-sans), sans-serif",
-                  fontSize: "13px",
-                  color: "var(--ink-mid)",
-                }}
-              >
-                {cat.label}
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-jetbrains), monospace",
-                  fontSize: "9px",
-                  color: "var(--ink-faint)",
-                  letterSpacing: "0.1em",
-                  marginTop: "3px",
-                }}
-              >
-                {cat.count} tools
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
@@ -397,7 +454,14 @@ export default function HomePage() {
           padding: "0 1.5rem 6rem",
         }}
       >
-        <div style={{ marginBottom: "1.5rem" }}>
+        <div
+          style={{
+            marginBottom: "1.5rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.75rem",
+          }}
+        >
           <h2
             style={{
               fontFamily: "var(--font-noto-serif), serif",
@@ -409,18 +473,44 @@ export default function HomePage() {
           >
             すべてのツール
           </h2>
+          {(query !== "" || activeCategory !== null) && (
+            <span
+              style={{
+                fontFamily: "var(--font-jetbrains), monospace",
+                fontSize: "11px",
+                color: "var(--ink-light)",
+              }}
+            >
+              {filtered.length} / {TOOLS.length}
+            </span>
+          )}
         </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: "1rem",
-          }}
-        >
-          {TOOLS.map((tool) => (
-            <ToolCard key={tool.id} {...tool} />
-          ))}
-        </div>
+
+        {filtered.length === 0 ? (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "4rem 1rem",
+              fontFamily: "var(--font-noto-sans), sans-serif",
+              fontSize: "14px",
+              color: "var(--ink-light)",
+            }}
+          >
+            「{query}」に一致するツールが見つかりません
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "1rem",
+            }}
+          >
+            {filtered.map((tool) => (
+              <ToolCard key={tool.id} {...tool} />
+            ))}
+          </div>
+        )}
       </section>
     </main>
   );

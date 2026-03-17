@@ -25,6 +25,9 @@ const tools = [
   { path: '/regex-tester',    lastModified: new Date('2026-03-17') },
   { path: '/http-status',     lastModified: new Date('2026-03-17') },
   { path: '/jwt-decoder',     lastModified: new Date('2026-03-17') },
+  { path: '/number-base',     lastModified: new Date('2026-03-17') },
+  { path: '/url-parser',      lastModified: new Date('2026-03-17') },
+  { path: '/byte-converter',  lastModified: new Date('2026-03-17') },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
