@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import JsonPathTool from './_components/JsonPathTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'JSONパスクエリ — JSONPathで値を抽出',
@@ -137,6 +138,8 @@ export default function JsonPathPage() {
       }}>
         <JsonPathTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

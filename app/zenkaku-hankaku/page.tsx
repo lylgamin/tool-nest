@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import ZenkakuHankakuClient from './_components/ZenkakuHankakuClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: '全角・半角変換',
@@ -89,6 +90,8 @@ export default function ZenkakuHankakuPage() {
       <section style={{ marginBottom: '3rem' }}>
         <ZenkakuHankakuClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

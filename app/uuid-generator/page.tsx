@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import UuidGeneratorTool from './_components/UuidGeneratorTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'UUID生成ツール',
@@ -82,6 +83,8 @@ export default function UuidGeneratorPage() {
       }}>
         <UuidGeneratorTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import NumberBaseClient from './_components/NumberBaseClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: '進数変換 — 2進・8進・10進・16進',
@@ -106,6 +107,8 @@ export default function NumberBasePage() {
       }}>
         <NumberBaseClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

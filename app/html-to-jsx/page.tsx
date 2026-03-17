@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import HtmlToJsxTool from './_components/HtmlToJsxTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'HTML ↔ JSX 変換',
@@ -122,6 +123,8 @@ export default function HtmlToJsxPage() {
       }}>
         <HtmlToJsxTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import DateDiffClient from './_components/DateDiffClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: '日時差分計算 — 2つの日時の差を計算',
@@ -129,6 +130,8 @@ export default function DateDiffPage() {
       }}>
         <DateDiffClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

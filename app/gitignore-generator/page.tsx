@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import GitignoreGeneratorTool from './_components/GitignoreGeneratorTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: '.gitignoreファイル生成',
@@ -96,6 +97,8 @@ export default function GitignoreGeneratorPage() {
       }}>
         <GitignoreGeneratorTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

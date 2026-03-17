@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import SqlFormatterTool from './_components/SqlFormatterTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'SQLフォーマッター',
@@ -132,6 +133,8 @@ export default function SqlFormatterPage() {
       }}>
         <SqlFormatterTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

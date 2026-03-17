@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import ContrastCheckerTool from './_components/ContrastCheckerTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'コントラスト比チェッカー',
@@ -110,6 +111,8 @@ export default function ContrastCheckerPage() {
       }}>
         <ContrastCheckerTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

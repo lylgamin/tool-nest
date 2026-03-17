@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import KebabCaseClient from './_components/KebabCaseClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'ケバブケース / スネークケース変換',
@@ -87,6 +88,8 @@ export default function KebabCasePage() {
       <section style={{ marginBottom: '3rem' }}>
         <KebabCaseClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

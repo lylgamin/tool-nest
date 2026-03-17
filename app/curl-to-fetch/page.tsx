@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import CurlToFetchTool from './_components/CurlToFetchTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'curl → Fetch / Axios / Python 変換',
@@ -113,6 +114,8 @@ export default function CurlToFetchPage() {
       }}>
         <CurlToFetchTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import CharCodeTool from './_components/CharCodeTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: '文字コード変換 | Unicode / UTF-8 / HTML実体参照',
@@ -113,6 +114,8 @@ export default function CharCodePage() {
       }}>
         <CharCodeTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

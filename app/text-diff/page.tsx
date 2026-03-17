@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import TextDiffTool from './_components/TextDiffTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'テキスト差分ツール — 2つのテキストを行単位で比較',
@@ -123,6 +124,8 @@ export default function TextDiffPage() {
       }}>
         <TextDiffTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import JsonFormatterTool from './_components/JsonFormatterTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'JSONフォーマッター',
@@ -99,6 +100,8 @@ export default function JsonFormatterPage() {
       }}>
         <JsonFormatterTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

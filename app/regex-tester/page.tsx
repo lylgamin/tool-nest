@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import RegexTesterClient from './_components/RegexTesterClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: '正規表現テスター',
@@ -92,6 +93,8 @@ export default function RegexTesterPage() {
       }}>
         <RegexTesterClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

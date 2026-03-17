@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import GitCommitBuilderTool from './_components/GitCommitBuilderTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'Gitコミットメッセージ生成',
@@ -94,6 +95,8 @@ export default function GitCommitBuilderPage() {
       }}>
         <GitCommitBuilderTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

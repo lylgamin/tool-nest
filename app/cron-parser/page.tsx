@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import CronParserClient from './_components/CronParserClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'cron式パーサー — cron式を日本語で解説',
@@ -138,6 +139,8 @@ export default function CronParserPage() {
       }}>
         <CronParserClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

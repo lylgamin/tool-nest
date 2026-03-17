@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import JwtDecoderClient from './_components/JwtDecoderClient'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'JWTデコーダー',
@@ -88,6 +89,8 @@ export default function JwtDecoderPage() {
       }}>
         <JwtDecoderClient />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

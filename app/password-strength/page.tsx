@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import PasswordStrengthTool from './_components/PasswordStrengthTool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'パスワード強度チェック — エントロピーで強度を評価',
@@ -116,6 +117,8 @@ export default function PasswordStrengthPage() {
       }}>
         <PasswordStrengthTool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>

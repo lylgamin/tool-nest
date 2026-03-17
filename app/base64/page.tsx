@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Base64Tool from './_components/Base64Tool'
+import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
   title: 'Base64エンコード/デコード',
@@ -103,6 +104,8 @@ export default function Base64Page() {
       }}>
         <Base64Tool />
       </section>
+
+      <AdUnit />
 
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
