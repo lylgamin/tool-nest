@@ -102,8 +102,10 @@ export default function TimezonePage() {
         <SectionHeading title="関連ツール" count="04" />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
           <RelatedToolBadge label="Unix時間変換" href="/unix-time" />
+          <RelatedToolBadge label="日時差分計算" href="/date-diff" />
+          <RelatedToolBadge label="cron式パーサー" href="/cron-parser" />
           <RelatedToolBadge label="西暦・和暦変換" href="/wareki" />
-          <RelatedToolBadge label="年間通算日計算" />
+          <RelatedToolBadge label="年間通算日計算" href="/day-of-year" />
         </div>
       </section>
 

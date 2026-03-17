@@ -28,6 +28,9 @@ const tools = [
   { path: '/number-base',     lastModified: new Date('2026-03-17') },
   { path: '/url-parser',      lastModified: new Date('2026-03-17') },
   { path: '/byte-converter',  lastModified: new Date('2026-03-17') },
+  { path: '/cron-parser',     lastModified: new Date('2026-03-17') },
+  { path: '/date-diff',            lastModified: new Date('2026-03-17') },
+  { path: '/password-generator',  lastModified: new Date('2026-03-17') },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {

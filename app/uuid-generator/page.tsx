@@ -159,8 +159,8 @@ export default function UuidGeneratorPage() {
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="関連ツール" count="04" />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <RelatedToolBadge label="ハッシュ生成" href="/hash" disabled />
-          <RelatedToolBadge label="パスワード生成" href="/password-generator" disabled />
+          <RelatedToolBadge label="ハッシュ生成" href="/hash" />
+          <RelatedToolBadge label="パスワード生成" href="/password-generator" />
           <RelatedToolBadge label="JSONフォーマッター" href="/json-formatter" />
         </div>
       </section>

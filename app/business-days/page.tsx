@@ -97,6 +97,8 @@ export default function BusinessDaysPage() {
         <SectionHeading title="関連ツール" count="04" />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
           <RelatedToolBadge label="日本の祝日計算" href="/japan-holidays" />
+          <RelatedToolBadge label="日時差分計算" href="/date-diff" />
+          <RelatedToolBadge label="cron式パーサー" href="/cron-parser" />
           <RelatedToolBadge label="西暦・和暦変換" href="/wareki" />
           <RelatedToolBadge label="文字数カウンター" href="/character-count" />
         </div>
