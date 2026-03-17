@@ -41,6 +41,10 @@ const tools = [
   { path: '/qr-generator',        lastModified: new Date('2026-03-17') },
   { path: '/curl-to-fetch',       lastModified: new Date('2026-03-17') },
   { path: '/ogp-preview',         lastModified: new Date('2026-03-17') },
+  { path: '/text-diff',           lastModified: new Date('2026-03-17') },
+  { path: '/char-code',           lastModified: new Date('2026-03-17') },
+  { path: '/json-path',           lastModified: new Date('2026-03-17') },
+  { path: '/password-strength',   lastModified: new Date('2026-03-17') },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
