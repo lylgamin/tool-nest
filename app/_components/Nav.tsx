@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import CommandPaletteButton from './CommandPaletteButton'
 
 export default function Nav() {
   return (
@@ -80,6 +81,7 @@ export default function Nav() {
             >
               カテゴリ
             </Link>
+            <CommandPaletteButton />
           </div>
         </div>
       </div>
