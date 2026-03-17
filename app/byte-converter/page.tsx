@@ -127,8 +127,6 @@ export default function ByteConverterPage() {
         <ByteConverterClient />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -146,6 +144,8 @@ export default function ByteConverterPage() {
           <li>プリセットボタン（1KB / 1MB / 1GB / 1TB）を使うと素早く一般的な値を入力できます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

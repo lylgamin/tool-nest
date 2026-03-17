@@ -134,8 +134,6 @@ export default function SqlFormatterPage() {
         <SqlFormatterTool />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -154,6 +152,8 @@ export default function SqlFormatterPage() {
           <li>「クリア」ボタンで入力・出力を一括リセットできます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

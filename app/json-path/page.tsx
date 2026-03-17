@@ -139,8 +139,6 @@ export default function JsonPathPage() {
         <JsonPathTool />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -159,6 +157,8 @@ export default function JsonPathPage() {
           <li>下部のターミナルにマッチ件数と各結果が表示されます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

@@ -140,8 +140,6 @@ export default function CronParserPage() {
         <CronParserClient />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -159,6 +157,8 @@ export default function CronParserPage() {
           <li>「次回実行時刻」に現在時刻以降の5件が表示されます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

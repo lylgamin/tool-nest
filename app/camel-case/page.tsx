@@ -94,8 +94,6 @@ export default function CamelCasePage() {
         <CamelCaseClient />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -117,6 +115,8 @@ export default function CamelCasePage() {
           <li>「コピー」ボタンで変換結果をクリップボードにコピーできます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

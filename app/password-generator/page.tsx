@@ -138,8 +138,6 @@ export default function PasswordGeneratorPage() {
         <PasswordGeneratorClient />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -158,6 +156,8 @@ export default function PasswordGeneratorPage() {
           <li>「5件生成」ボタンで一度に5個のパスワードを一覧表示できます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

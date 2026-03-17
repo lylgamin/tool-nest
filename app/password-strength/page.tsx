@@ -118,8 +118,6 @@ export default function PasswordStrengthPage() {
         <PasswordStrengthTool />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -138,6 +136,8 @@ export default function PasswordStrengthPage() {
           <li>「表示/非表示」ボタンで入力文字を確認できます。「コピー」で入力内容をコピーできます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

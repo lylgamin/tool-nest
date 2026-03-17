@@ -777,11 +777,14 @@ function ToolCard({
     borderRadius: "4px",
     padding: "1.25rem",
     paddingRight: "2.75rem", // ピンボタンの分のスペース
-    display: "block",
+    display: "flex",
+    flexDirection: "column" as const,
+    height: "100%",
     textDecoration: "none",
     opacity: ready ? 1 : 0.55,
     cursor: ready ? "pointer" : "default",
     overflow: "hidden" as const,
+    boxSizing: "border-box" as const,
   };
 
   const inner = (
@@ -829,6 +832,7 @@ function ToolCard({
           color: "var(--ink-light)",
           lineHeight: 1.6,
           margin: "0 0 0.75rem",
+          flex: 1,
         }}
       >
         {description}
@@ -859,7 +863,7 @@ function ToolCard({
     );
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", height: "100%" }}>
       {card}
       {ready && (
         <button

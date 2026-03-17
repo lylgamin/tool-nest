@@ -98,8 +98,6 @@ export default function GitignoreGeneratorPage() {
         <GitignoreGeneratorTool />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -118,6 +116,8 @@ export default function GitignoreGeneratorPage() {
           <li>「コピー」ボタンでクリップボードにコピーしてそのまま貼り付けられます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

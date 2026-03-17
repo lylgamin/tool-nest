@@ -94,8 +94,6 @@ export default function RegexTesterPage() {
         <RegexTesterClient />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -114,6 +112,8 @@ export default function RegexTesterPage() {
           <li>キャプチャグループ（括弧でくくった部分）がある場合は $1, $2 … として表示されます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

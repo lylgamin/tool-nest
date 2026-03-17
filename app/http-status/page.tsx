@@ -86,8 +86,6 @@ export default function HttpStatusPage() {
         <HttpStatusClient />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -105,6 +103,8 @@ export default function HttpStatusPage() {
           <li>各カードにはコード番号・英語名・日本語名・説明が表示されます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

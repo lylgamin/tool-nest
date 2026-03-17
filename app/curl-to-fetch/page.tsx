@@ -115,8 +115,6 @@ export default function CurlToFetchPage() {
         <CurlToFetchTool />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -135,6 +133,8 @@ export default function CurlToFetchPage() {
           <li>サンプルボタンから代表的なcurlコマンドをワンクリックで入力できます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>
