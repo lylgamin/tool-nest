@@ -2,10 +2,10 @@ import Link from "next/link";
 
 const CATEGORIES = [
   { id: "text", label: "テキスト", icon: "Tt", count: 1 },
-  { id: "encode", label: "エンコード", icon: "{}", count: 1 },
+  { id: "encode", label: "エンコード", icon: "{}", count: 3 },
   { id: "format", label: "フォーマット", icon: "<>", count: 1 },
   { id: "convert", label: "変換", icon: "⇄", count: 4 },
-  { id: "generate", label: "生成", icon: "✦", count: 1 },
+  { id: "generate", label: "生成", icon: "✦", count: 2 },
   { id: "calc", label: "計算", icon: "#", count: 4 },
 ];
 
@@ -50,19 +50,28 @@ const TOOLS = [
     id: "url-encode",
     title: "URLエンコード",
     description:
-      "URLをパーセントエンコーディングでエンコード・デコードできます。",
+      "URLをパーセントエンコーディングでエンコード・デコードできます。日本語や特殊文字の変換に対応。",
     category: "encode",
-    href: null,
-    ready: false,
+    href: "/url-encode",
+    ready: true,
+  },
+  {
+    id: "html-escape",
+    title: "HTMLエスケープ",
+    description:
+      "HTMLの特殊文字（&・<・>・\"・'）をエスケープ・アンエスケープできます。XSS対策の確認に。",
+    category: "encode",
+    href: "/html-escape",
+    ready: true,
   },
   {
     id: "hash",
     title: "ハッシュ生成",
     description:
-      "MD5・SHA-1・SHA-256・SHA-512のハッシュ値を生成できます。",
+      "SHA-1・SHA-256・SHA-384・SHA-512のハッシュ値を生成できます。Web Crypto API使用。",
     category: "generate",
-    href: null,
-    ready: false,
+    href: "/hash",
+    ready: true,
   },
   {
     id: "unix-time",
