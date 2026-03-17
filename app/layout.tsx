@@ -7,6 +7,7 @@ import {
 } from "next/font/google";
 import Nav from "./_components/Nav";
 import Footer from "./_components/Footer";
+import CommandPalette from "./_components/CommandPalette";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -70,6 +71,7 @@ export default function RootLayout({
         <Nav />
         <div style={{ flex: 1 }}>{children}</div>
         <Footer />
+        <CommandPalette />
       </body>
     </html>
   );

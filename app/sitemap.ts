@@ -48,12 +48,29 @@ const tools = [
   { path: '/color-converter',     lastModified: new Date('2026-03-18') },
 ]
 
+const categories = [
+  { path: '/category/text',     lastModified: new Date('2026-03-18') },
+  { path: '/category/encode',   lastModified: new Date('2026-03-18') },
+  { path: '/category/format',   lastModified: new Date('2026-03-18') },
+  { path: '/category/convert',  lastModified: new Date('2026-03-18') },
+  { path: '/category/generate', lastModified: new Date('2026-03-18') },
+  { path: '/category/calc',     lastModified: new Date('2026-03-18') },
+  { path: '/category/ref',      lastModified: new Date('2026-03-18') },
+]
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const toolPages = tools.map(tool => ({
     url: `${BASE_URL}${tool.path}`,
     lastModified: tool.lastModified,
     changeFrequency: 'monthly' as const,
     priority: 0.8,
+  }))
+
+  const categoryPages = categories.map(cat => ({
+    url: `${BASE_URL}${cat.path}`,
+    lastModified: cat.lastModified,
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
   }))
 
   return [
@@ -70,5 +87,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
     ...toolPages,
+    ...categoryPages,
   ]
 }
