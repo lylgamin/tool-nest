@@ -1,48 +1,86 @@
 import type { Metadata } from 'next'
-import HashToolClient from './_components/HashToolClient'
+import DateDiffClient from './_components/DateDiffClient'
 
 export const metadata: Metadata = {
-  title: 'SHA-256/512 ハッシュ生成',
-  description: 'テキストのSHA-1・SHA-256・SHA-384・SHA-512ハッシュ値をブラウザ上で即座に計算します。Web Crypto API使用。入力内容はサーバーに送信されません。',
+  title: '日時差分計算 — 2つの日時の差を計算',
+  description: '2つの日時の差を日・時間・分・秒・年月日で計算するWebツール。デプロイ間隔や期間計算に便利。入力内容はサーバーに送信されません。',
   openGraph: {
-    title: 'SHA-256/512 ハッシュ生成 | tool-nest',
-    description: 'テキストのSHA-1・SHA-256・SHA-384・SHA-512ハッシュ値をブラウザ上で即座に計算。Web Crypto API使用。',
-    url: 'https://tool-nest.pages.dev/hash',
+    title: '日時差分計算 | tool-nest',
+    description: '2つの日時の差を日・時間・分・秒・年月日で計算。デプロイ間隔や期間計算に便利。',
+    url: 'https://tool-nest.pages.dev/date-diff',
   },
 }
 
 const jsonLdString = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'SHA-256/512 ハッシュ生成',
+  name: '日時差分計算',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Any',
-  description: 'テキストのSHA-1・SHA-256・SHA-384・SHA-512ハッシュ値をブラウザ上で計算するWebツール。',
-  url: 'https://tool-nest.pages.dev/hash',
+  description: '2つの日時の差を日・時間・分・秒・年月日で計算するWebツール。',
+  url: 'https://tool-nest.pages.dev/date-diff',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
   inLanguage: 'ja',
 })
 
-const coreCode = `export type HashAlgorithm = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512'
-
-// Web Crypto API を使ったハッシュ計算（非同期）
-export async function computeHash(
-  input: string,
-  algorithm: HashAlgorithm
-): Promise<string> {
-  const encoder = new TextEncoder()
-  const data = encoder.encode(input)
-  const hashBuffer = await crypto.subtle.digest(algorithm, data)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+const coreCode = `export type DiffResult = {
+  totalMs: number
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
+  totalDays: number
+  totalHours: number
+  totalMinutes: number
+  totalSeconds: number
+  approxYears: number
+  approxMonths: number
+  approxDaysRemainder: number
+  isPast: boolean
 }
 
-// 8文字ごとにスペースを挿入して可読性を向上
-export function formatHash(hashHex: string): string {
-  return hashHex.match(/.{1,8}/g)?.join(' ') ?? hashHex
+export function calcDiff(date1: string, date2: string): DiffResult | null {
+  const d1 = new Date(date1)
+  const d2 = new Date(date2)
+  if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return null
+
+  const totalMs = Math.abs(d2.getTime() - d1.getTime())
+  const totalSeconds = Math.floor(totalMs / 1000)
+  const totalMinutes = Math.floor(totalMs / 60000)
+  const totalHours = Math.floor(totalMs / 3600000)
+  const totalDays = Math.floor(totalMs / 86400000)
+
+  const days = totalDays
+  const hours = Math.floor((totalMs % 86400000) / 3600000)
+  const minutes = Math.floor((totalMs % 3600000) / 60000)
+  const seconds = Math.floor((totalMs % 60000) / 1000)
+
+  const approxYears = Math.floor(totalDays / 365)
+  const approxMonths = Math.floor((totalDays % 365) / 30)
+  const approxDaysRemainder = totalDays % 30
+
+  return {
+    totalMs, days, hours, minutes, seconds,
+    totalDays, totalHours, totalMinutes, totalSeconds,
+    approxYears, approxMonths, approxDaysRemainder,
+    isPast: d1.getTime() > d2.getTime(),
+  }
+}
+
+export function formatDuration(result: DiffResult): string {
+  const parts: string[] = []
+  if (result.approxYears > 0) parts.push(\`\${result.approxYears}年\`)
+  if (result.approxMonths > 0) parts.push(\`\${result.approxMonths}ヶ月\`)
+  if (result.approxDaysRemainder > 0 || parts.length === 0)
+    parts.push(\`\${result.approxDaysRemainder}日\`)
+  const timeParts: string[] = []
+  if (result.hours > 0) timeParts.push(\`\${result.hours}時間\`)
+  if (result.minutes > 0) timeParts.push(\`\${result.minutes}分\`)
+  if (timeParts.length > 0) parts.push(timeParts.join(''))
+  return parts.join('')
 }`
 
-export default function HashPage() {
+export default function DateDiffPage() {
   return (
     <main style={{ maxWidth: '860px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
       {/* JSON-LD: static structured data, no user input */}
@@ -58,7 +96,7 @@ export default function HashPage() {
           textTransform: 'uppercase',
           marginBottom: '0.5rem',
         }}>
-          crypto / hash
+          calc / date
         </div>
         <h1 style={{
           fontFamily: 'var(--font-cormorant), serif',
@@ -68,7 +106,7 @@ export default function HashPage() {
           margin: 0,
           lineHeight: 1.1,
         }}>
-          SHA ハッシュ生成
+          日時差分計算
         </h1>
         <p style={{
           fontFamily: 'var(--font-noto-sans), sans-serif',
@@ -77,8 +115,7 @@ export default function HashPage() {
           marginTop: '0.75rem',
           lineHeight: 1.6,
         }}>
-          テキストのSHA-1・SHA-256・SHA-384・SHA-512ハッシュ値をブラウザ上で即座に計算します。
-          Web Crypto APIを使用し、入力内容はサーバーに送信されません。
+          2つの日時の差を日・時間・分・秒・年月日で計算します。デプロイ間隔や期間計算に便利です。入力内容はサーバーに送信されません。
         </p>
       </div>
 
@@ -90,7 +127,7 @@ export default function HashPage() {
         padding: '1.5rem',
         marginBottom: '3rem',
       }}>
-        <HashToolClient />
+        <DateDiffClient />
       </section>
 
       {/* 使い方 */}
@@ -104,10 +141,11 @@ export default function HashPage() {
           paddingLeft: '1.5rem',
           margin: 0,
         }}>
-          <li>アルゴリズムボタン（SHA-1 / SHA-256 / SHA-384 / SHA-512）でハッシュ関数を選択します</li>
-          <li>テキストエリアにハッシュ化したいテキストを入力します</li>
-          <li>リアルタイムでハッシュ値が16進数で表示されます</li>
-          <li>「コピー」ボタンでハッシュ値をクリップボードにコピーできます</li>
+          <li>「開始日時」と「終了日時」に日時を入力してください</li>
+          <li>「今すぐ設定」ボタンで現在時刻を素早くセットできます</li>
+          <li>入力と同時にリアルタイムで差分が計算されます</li>
+          <li>結果は日・時間・分・秒の詳細表示と、総日数・総時間数などのまとめカードで確認できます</li>
+          <li>終了日時が開始日時より前の場合も差分は絶対値で計算されます</li>
         </ol>
       </section>
 
@@ -121,9 +159,7 @@ export default function HashPage() {
           marginBottom: '1rem',
           lineHeight: 1.7,
         }}>
-          ブラウザ標準の{' '}
-          <code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '13px', backgroundColor: 'var(--navy-light)', padding: '1px 5px', borderRadius: '3px' }}>crypto.subtle.digest</code>
-          {' '}のみで実装。外部ライブラリ不要でそのままコピーして利用できます。
+          ブラウザ標準の <code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '13px', backgroundColor: 'var(--navy-light)', padding: '1px 5px', borderRadius: '3px' }}>Date</code> オブジェクトのみで実装。外部ライブラリ不要でそのままコピーして利用できます。
         </p>
         <pre style={{
           backgroundColor: '#111820',
@@ -145,24 +181,20 @@ export default function HashPage() {
         <SectionHeading title="よくある使用例・注意点" count="03" />
         <div style={{ display: 'grid', gap: '1rem' }}>
           <UsageNote
-            title="ファイルの整合性確認"
-            body="ダウンロードしたファイルが改ざんされていないか確認するために、SHA-256ハッシュを比較します。配布元が公開するハッシュ値と一致すれば、ファイルは正常です。GitHubのリリースページでも sha256sum として掲載されることが多いです。"
+            title="プロジェクト期間の計算"
+            body="プロジェクトの開始日と終了日を入力することで、正確な開発期間を日・時間単位で把握できます。スプリント期間（14日）やリリース間隔の確認にも便利です。デプロイタイムスタンプを2つ貼り付けるだけで差分が出ます。"
           />
           <UsageNote
-            title="パスワードの保存（注意あり）"
-            body="SHAはパスワード保存に適していません。SHA-256などは計算が高速なため、ブルートフォース攻撃に弱いです。パスワードの保存にはbcrypt・Argon2・scryptなど専用のKey Derivation Function（KDF）を使用してください。"
+            title="年齢・経過年数の計算"
+            body="生年月日と現在日時を入力すると「約X年Xヶ月X日」として概算の年齢が表示されます。ただし年月の概算は365日/12ヶ月を基準にしているため、うるう年や月ごとの日数差は考慮されていません。厳密な年齢計算が必要な場合は別途暦計算ロジックを実装してください。"
           />
           <UsageNote
-            title="データの一意識別子（チェックサム）"
-            body="テキストやデータのSHA-256ハッシュは、内容が同じなら常に同じ値になります。キャッシュのキーや重複チェック、データの変更検知など、一意な識別子として活用できます。"
+            title="うるう年・月またぎへの注意"
+            body="このツールの「年月日概算」はあくまで参考値です。365日を1年、30日を1ヶ月として単純割り算しています。うるう年（366日）や月によって日数が異なる（28〜31日）ため、年月単位での厳密な差分が必要な場合は差異が生じます。正確な差分が必要な場合は「総日数」や「総時間数」を使ってください。"
           />
           <UsageNote
-            title="アルゴリズムの選択基準"
-            body="SHA-1は衝突攻撃が発見されており、セキュリティ用途には非推奨です。一般的なセキュリティ用途にはSHA-256を推奨します。SHA-384・SHA-512はより強力ですが、出力が長くなります。パフォーマンスよりセキュリティを重視する場合に選択してください。"
-          />
-          <UsageNote
-            title="Web Crypto APIの対応環境"
-            body="このツールはブラウザ標準のWeb Crypto API（crypto.subtle）を使用しています。Chrome 37+、Firefox 34+、Safari 7+、Edge 12+で利用可能です。なお、crypto.subtleはセキュアコンテキスト（HTTPS または localhost）でのみ動作します。"
+            title="タイムゾーンについて"
+            body="datetime-local 入力はブラウザのローカルタイムゾーンで値を扱います。そのため計算結果はあなたのブラウザのタイムゾーン設定に依存します。UTCや別タイムゾーンのタイムスタンプを比較する場合は、同一タイムゾーンに変換してから入力してください。タイムゾーン変換には「タイムゾーン変換」ツールを活用できます。"
           />
         </div>
       </section>
@@ -171,11 +203,9 @@ export default function HashPage() {
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="関連ツール" count="04" />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <RelatedToolBadge label="UUID生成" href="/uuid-generator" />
-          <RelatedToolBadge label="パスワード生成" href="/password-generator" />
-          <RelatedToolBadge label="Base64エンコード" href="/base64" />
-          <RelatedToolBadge label="URLエンコード" href="/url-encode" />
-          <RelatedToolBadge label="HTMLエスケープ" href="/html-escape" />
+          <RelatedToolBadge label="UNIXタイム変換" href="/unix-time" />
+          <RelatedToolBadge label="タイムゾーン変換" href="/timezone" />
+          <RelatedToolBadge label="営業日計算" href="/business-days" />
         </div>
       </section>
 
@@ -192,7 +222,7 @@ export default function HashPage() {
           MITライセンスで自由に利用・改変できます。
         </p>
         <a
-          href="https://github.com/lylgamin/tool-nest/tree/main/app/hash"
+          href="https://github.com/lylgamin/tool-nest/tree/main/app/date-diff"
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -273,23 +303,7 @@ function UsageNote({ title, body }: { title: string; body: string }) {
   )
 }
 
-function RelatedToolBadge({ label, href, disabled }: { label: string; href: string; disabled?: boolean }) {
-  if (disabled) {
-    return (
-      <span style={{
-        fontFamily: 'var(--font-jetbrains), monospace',
-        fontSize: '11px',
-        letterSpacing: '0.05em',
-        color: 'var(--ink-faint)',
-        border: '1px solid var(--border-light)',
-        borderRadius: '3px',
-        padding: '5px 10px',
-        cursor: 'default',
-      }}>
-        {label} — 準備中
-      </span>
-    )
-  }
+function RelatedToolBadge({ label, href }: { label: string; href: string }) {
   return (
     <a
       href={href}

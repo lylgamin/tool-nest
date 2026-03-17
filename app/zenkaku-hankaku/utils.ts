@@ -55,7 +55,7 @@ export function toHankaku(input: string): string {
 export function toZenkaku(input: string): string {
   // 半角カタカナ・句読点（濁音・半濁音の2文字組み合わせを先に処理）
   // ｡=U+FF61 から ﾟ=U+FF9F の範囲で全半角句読点含む
-  let result = input.replace(/[｡-ﾟ][ﾞﾟ]|[｡-ﾟ]/g, (ch) => HAN_DAKUTEN[ch] ?? HAN_TO_ZEN_KANA[ch] ?? ch);
+  const result = input.replace(/[｡-ﾟ][ﾞﾟ]|[｡-ﾟ]/g, (ch) => HAN_DAKUTEN[ch] ?? HAN_TO_ZEN_KANA[ch] ?? ch);
 
   return result
     // 半角ASCII記号・英数字 → 全角 (U+0021-007E → U+FF01-FF5E)

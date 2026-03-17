@@ -8,8 +8,8 @@ const CATEGORIES = [
   { id: "encode", label: "エンコード", icon: "{}", count: 6 },
   { id: "format", label: "フォーマット", icon: "<>", count: 1 },
   { id: "convert", label: "変換", icon: "⇄", count: 7 },
-  { id: "generate", label: "生成", icon: "✦", count: 2 },
-  { id: "calc", label: "計算", icon: "#", count: 4 },
+  { id: "generate", label: "生成", icon: "✦", count: 3 },
+  { id: "calc", label: "計算", icon: "#", count: 6 },
   { id: "ref", label: "リファレンス", icon: "?", count: 1 },
 ];
 
@@ -207,6 +207,30 @@ const TOOLS = [
     description: "B・KB・MB・GB・TB を相互変換。SI（10進）と IEC（2進・1024）の両方に対応。",
     category: "calc",
     href: "/byte-converter",
+    ready: true,
+  },
+  {
+    id: "cron-parser",
+    title: "cron式パーサー",
+    description: "cron式を入力すると日本語で意味を解説し、次回実行時刻を5件表示。よく使うプリセット付き。",
+    category: "calc",
+    href: "/cron-parser",
+    ready: true,
+  },
+  {
+    id: "date-diff",
+    title: "日時差分計算",
+    description: "2つの日時の差を日・時間・分・秒・年月日で計算。デプロイ間隔やプロジェクト期間の確認に。",
+    category: "calc",
+    href: "/date-diff",
+    ready: true,
+  },
+  {
+    id: "password-generator",
+    title: "パスワード生成",
+    description: "大文字・小文字・数字・記号の組み合わせでランダムパスワードを生成。強度（エントロピー）表示付き。",
+    category: "generate",
+    href: "/password-generator",
     ready: true,
   },
 ];
