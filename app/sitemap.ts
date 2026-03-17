@@ -31,6 +31,11 @@ const tools = [
   { path: '/cron-parser',     lastModified: new Date('2026-03-17') },
   { path: '/date-diff',            lastModified: new Date('2026-03-17') },
   { path: '/password-generator',  lastModified: new Date('2026-03-17') },
+  { path: '/html-to-jsx',         lastModified: new Date('2026-03-17') },
+  { path: '/sql-formatter',       lastModified: new Date('2026-03-17') },
+  { path: '/csv-json',            lastModified: new Date('2026-03-17') },
+  { path: '/json-to-ts',          lastModified: new Date('2026-03-17') },
+  { path: '/contrast-checker',   lastModified: new Date('2026-03-17') },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
