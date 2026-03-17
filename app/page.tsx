@@ -1,12 +1,13 @@
 import Link from "next/link";
 
 const CATEGORIES = [
-  { id: "text", label: "テキスト", icon: "Tt", count: 1 },
-  { id: "encode", label: "エンコード", icon: "{}", count: 3 },
-  { id: "format", label: "フォーマット", icon: "<>", count: 1 },
+  { id: "text", label: "テキスト", icon: "Tt", count: 2 },
+  { id: "encode", label: "エンコード", icon: "{}", count: 4 },
+  { id: "format", label: "フォーマット", icon: "<>", count: 2 },
   { id: "convert", label: "変換", icon: "⇄", count: 4 },
   { id: "generate", label: "生成", icon: "✦", count: 2 },
   { id: "calc", label: "計算", icon: "#", count: 4 },
+  { id: "ref", label: "リファレンス", icon: "?", count: 1 },
 ];
 
 const TOOLS = [
@@ -155,6 +156,30 @@ const TOOLS = [
     description: "日付を入力すると年間の経過日数・残り日数・進捗・ISO週番号を計算します。",
     category: "calc",
     href: "/day-of-year",
+    ready: true,
+  },
+  {
+    id: "regex-tester",
+    title: "正規表現テスター",
+    description: "正規表現パターンとテスト対象テキストを入力し、マッチ結果をリアルタイム確認。g/i/mフラグ・キャプチャグループに対応。",
+    category: "text",
+    href: "/regex-tester",
+    ready: true,
+  },
+  {
+    id: "jwt-decoder",
+    title: "JWTデコーダー",
+    description: "JWT（JSON Web Token）のヘッダー・ペイロードをデコードして表示。expクレームの期限確認付き。署名検証なし。",
+    category: "encode",
+    href: "/jwt-decoder",
+    ready: true,
+  },
+  {
+    id: "http-status",
+    title: "HTTPステータスコード一覧",
+    description: "HTTPステータスコードの意味・用途を日本語で解説。コード番号やキーワードで検索・カテゴリフィルタ対応。",
+    category: "ref",
+    href: "/http-status",
     ready: true,
   },
 ];

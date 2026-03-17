@@ -22,6 +22,9 @@ const tools = [
   { path: '/zenkaku-hankaku', lastModified: new Date('2026-03-17') },
   { path: '/camel-case',      lastModified: new Date('2026-03-17') },
   { path: '/kebab-case',      lastModified: new Date('2026-03-17') },
+  { path: '/regex-tester',    lastModified: new Date('2026-03-17') },
+  { path: '/http-status',     lastModified: new Date('2026-03-17') },
+  { path: '/jwt-decoder',     lastModified: new Date('2026-03-17') },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
