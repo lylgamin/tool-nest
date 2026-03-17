@@ -45,6 +45,7 @@ const tools = [
   { path: '/char-code',           lastModified: new Date('2026-03-17') },
   { path: '/json-path',           lastModified: new Date('2026-03-17') },
   { path: '/password-strength',   lastModified: new Date('2026-03-17') },
+  { path: '/color-converter',     lastModified: new Date('2026-03-18') },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
