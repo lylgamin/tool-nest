@@ -5,10 +5,8 @@ import {
   Noto_Sans_JP,
   Noto_Serif_JP,
 } from "next/font/google";
-import Script from "next/script";
 import Nav from "./_components/Nav";
 import Footer from "./_components/Footer";
-import CookieBanner from "./_components/CookieBanner";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -58,20 +56,20 @@ export default function RootLayout({
 
   return (
     <html lang="ja">
+      <head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9891812277341685"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body
         className={fontVars}
         style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9891812277341685"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
         <Nav />
         <div style={{ flex: 1 }}>{children}</div>
         <Footer />
-        <CookieBanner />
       </body>
     </html>
   );
