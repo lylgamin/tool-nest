@@ -16,6 +16,9 @@ const tools = [
   { path: '/json-formatter',   lastModified: new Date('2026-03-16') },
   { path: '/base64',           lastModified: new Date('2026-03-16') },
   { path: '/uuid-generator',   lastModified: new Date('2026-03-16') },
+  { path: '/url-encode',       lastModified: new Date('2026-03-17') },
+  { path: '/html-escape',      lastModified: new Date('2026-03-17') },
+  { path: '/hash',             lastModified: new Date('2026-03-17') },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
