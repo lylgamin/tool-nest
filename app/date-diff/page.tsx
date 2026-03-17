@@ -131,8 +131,6 @@ export default function DateDiffPage() {
         <DateDiffClient />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -151,6 +149,8 @@ export default function DateDiffPage() {
           <li>終了日時が開始日時より前の場合も差分は絶対値で計算されます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

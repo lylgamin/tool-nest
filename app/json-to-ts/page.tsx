@@ -140,8 +140,6 @@ export default function JsonToTsPage() {
         <JsonToTsTool />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -160,6 +158,8 @@ export default function JsonToTsPage() {
           <li>「コピー」ボタンでクリップボードにコピーして、そのままコードに貼り付けられます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

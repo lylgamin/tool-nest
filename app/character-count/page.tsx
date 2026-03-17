@@ -93,8 +93,6 @@ export default function CharacterCountPage() {
         <CharacterCountTool />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -111,6 +109,8 @@ export default function CharacterCountPage() {
           <li>「クリア」ボタンでテキストをリセットできます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

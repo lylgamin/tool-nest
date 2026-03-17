@@ -125,8 +125,6 @@ export default function TextDiffPage() {
         <TextDiffTool />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -145,6 +143,8 @@ export default function TextDiffPage() {
           <li>左側の数字が旧テキストの行番号、右側の数字が新テキストの行番号です</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

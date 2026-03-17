@@ -113,8 +113,6 @@ export default function OgpPreviewPage() {
         <OgpPreviewTool />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -133,6 +131,8 @@ export default function OgpPreviewPage() {
           <li>「コピー」ボタンでタグをクリップボードにコピーし、HTMLの&lt;head&gt;に貼り付けてください</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

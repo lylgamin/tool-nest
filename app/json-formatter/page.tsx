@@ -101,8 +101,6 @@ export default function JsonFormatterPage() {
         <JsonFormatterTool />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -121,6 +119,8 @@ export default function JsonFormatterPage() {
           <li>入力時にリアルタイムでJSONの有効性を確認できます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>

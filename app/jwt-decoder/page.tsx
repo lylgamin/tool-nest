@@ -90,8 +90,6 @@ export default function JwtDecoderPage() {
         <JwtDecoderClient />
       </section>
 
-      <AdUnit />
-
       {/* 使い方 */}
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="使い方" count="01" />
@@ -110,6 +108,8 @@ export default function JwtDecoderPage() {
           <li>「結果をコピー」ボタンでデコード結果をJSON形式でクリップボードにコピーできます</li>
         </ol>
       </section>
+
+      <AdUnit />
 
       {/* 実装コード */}
       <section style={{ marginBottom: '3rem' }}>
