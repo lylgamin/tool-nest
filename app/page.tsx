@@ -4,12 +4,12 @@ import Link from "next/link";
 import { useState, useMemo } from "react";
 
 const CATEGORIES = [
-  { id: "text", label: "テキスト", icon: "Tt", count: 2 },
-  { id: "encode", label: "エンコード", icon: "{}", count: 6 },
-  { id: "format", label: "フォーマット", icon: "<>", count: 2 },
+  { id: "text", label: "テキスト", icon: "Tt", count: 3 },
+  { id: "encode", label: "エンコード", icon: "{}", count: 7 },
+  { id: "format", label: "フォーマット", icon: "<>", count: 3 },
   { id: "convert", label: "変換", icon: "⇄", count: 10 },
   { id: "generate", label: "生成", icon: "✦", count: 6 },
-  { id: "calc", label: "計算", icon: "#", count: 7 },
+  { id: "calc", label: "計算", icon: "#", count: 8 },
   { id: "ref", label: "リファレンス", icon: "?", count: 2 },
 ];
 
@@ -311,6 +311,38 @@ const TOOLS = [
     description: "OGPのmetaタグを入力してTwitter/X・Slackでの見え方をリアルタイムシミュレート。metaタグのHTML生成付き。",
     category: "ref",
     href: "/ogp-preview",
+    ready: true,
+  },
+  {
+    id: "text-diff",
+    title: "テキスト差分ツール",
+    description: "2つのテキストを行単位で比較し、追加・削除された行をハイライト表示します。LCSアルゴリズム使用。",
+    category: "text",
+    href: "/text-diff",
+    ready: true,
+  },
+  {
+    id: "char-code",
+    title: "文字コード変換",
+    description: "文字のUnicodeコードポイント・UTF-8バイト列・HTML実体参照を表示。U+XXXX形式からの逆引きも可能。",
+    category: "encode",
+    href: "/char-code",
+    ready: true,
+  },
+  {
+    id: "json-path",
+    title: "JSONパスクエリ",
+    description: "JSONPath式（$.foo.bar・$..key・[*]など）でJSONデータをクエリ・デバッグできます。外部ライブラリ不使用。",
+    category: "format",
+    href: "/json-path",
+    ready: true,
+  },
+  {
+    id: "password-strength",
+    title: "パスワード強度チェック",
+    description: "パスワードのエントロピー（bits）・文字集合・強度スコアを計算。改善提案と解読時間の目安を表示。",
+    category: "calc",
+    href: "/password-strength",
     ready: true,
   },
 ];
