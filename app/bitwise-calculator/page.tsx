@@ -1,80 +1,60 @@
 import type { Metadata } from 'next'
-import TextDiffTool from './_components/TextDiffTool'
+import BitwiseCalculatorTool from './_components/BitwiseCalculatorTool'
 import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
-  title: 'テキスト差分ツール — 2つのテキストを行単位で比較',
-  description: '2つのテキストを行単位で比較し、追加・削除・変更箇所をハイライト表示するWebツール。LCSアルゴリズム使用。入力データはサーバーに送信されません。',
+  title: 'ビット演算計算機 — AND/OR/XOR/NOT/シフト演算をブラウザで',
+  description: 'AND・OR・XOR・NOT・左右シフトなどのビット演算をブラウザ上で計算。2進数・8進数・10進数・16進数で結果を表示。入力データはサーバーに送信されません。',
   openGraph: {
-    title: 'テキスト差分ツール | tool-nest',
-    description: '2つのテキストを行単位で比較。追加・削除をブラウザ内で完結。LCSアルゴリズム実装。',
-    url: 'https://tool-nest.pages.dev/text-diff',
+    title: 'ビット演算計算機 | tool-nest',
+    description: 'AND/OR/XOR/NOT/LSHIFT/RSHIFTをブラウザ内で計算。BIN・OCT・DEC・HEXで結果表示。',
+    url: 'https://tool-nest.pages.dev/bitwise-calculator',
   },
 }
 
 const jsonLdString = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'テキスト差分ツール',
+  name: 'ビット演算計算機',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Any',
-  description: '2つのテキストを行単位で比較し、差分をハイライト表示するWebツール。ブラウザのみで動作し、データはサーバーに送信されません。',
-  url: 'https://tool-nest.pages.dev/text-diff',
+  description: 'AND・OR・XOR・NOT・左右シフトなどのビット演算をブラウザ上で計算するWebツール。2進数・8進数・10進数・16進数で入力・出力できます。データはサーバーに送信されません。',
+  url: 'https://tool-nest.pages.dev/bitwise-calculator',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
   inLanguage: 'ja',
 })
 
-const coreLogicCode = `export type DiffKind = 'equal' | 'added' | 'removed'
-export interface DiffLine {
-  kind: DiffKind
-  lineOld: number | null  // 元テキストでの行番号（1始まり）
-  lineNew: number | null  // 新テキストでの行番号（1始まり）
-  content: string
+const coreLogicCode = `export type BitwiseOp = 'AND' | 'OR' | 'XOR' | 'NOT' | 'LSHIFT' | 'RSHIFT'
+
+export function bitwiseCalc(op: BitwiseOp, a: number, b: number): number {
+  switch (op) {
+    case 'AND':    return (a & b) >>> 0
+    case 'OR':     return (a | b) >>> 0
+    case 'XOR':    return (a ^ b) >>> 0
+    case 'NOT':    return (~a) >>> 0
+    case 'LSHIFT': return (a << b) >>> 0
+    case 'RSHIFT': return (a >>> b)
+  }
 }
 
-/** LCS（最長共通部分列）アルゴリズムを使った行単位の差分計算 */
-export function diffLines(oldText: string, newText: string): DiffLine[] {
-  if (oldText === '' && newText === '') return []
+export function toBinaryStr(n: number, bits: 8 | 16 | 32 = 32): string {
+  const unsigned = n >>> 0
+  return unsigned.toString(2).padStart(bits, '0')
+}
 
-  const oldLines = oldText === '' ? [] : oldText.split('\\n')
-  const newLines = newText === '' ? [] : newText.split('\\n')
-  const m = oldLines.length
-  const n = newLines.length
+export function toHexStr(n: number): string {
+  return (n >>> 0).toString(16).toUpperCase().padStart(8, '0')
+}
 
-  // DPテーブルを構築（O(m*n) 時間・空間計算量）
-  const dp: number[][] = Array.from({ length: m + 1 }, () =>
-    new Array(n + 1).fill(0)
-  )
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (oldLines[i - 1] === newLines[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
-      }
-    }
-  }
-
-  // バックトラックで差分を生成
-  const result: DiffLine[] = []
-  let i = m
-  let j = n
-  while (i > 0 || j > 0) {
-    if (i > 0 && j > 0 && oldLines[i - 1] === newLines[j - 1]) {
-      result.push({ kind: 'equal', lineOld: i, lineNew: j, content: oldLines[i - 1] })
-      i--; j--
-    } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
-      result.push({ kind: 'added', lineOld: null, lineNew: j, content: newLines[j - 1] })
-      j--
-    } else {
-      result.push({ kind: 'removed', lineOld: i, lineNew: null, content: oldLines[i - 1] })
-      i--
-    }
-  }
-  return result.reverse()
+export function parseIntInput(s: string, base: 2 | 8 | 10 | 16): number | null {
+  const trimmed = s.trim()
+  if (!trimmed) return null
+  const n = parseInt(trimmed, base)
+  if (isNaN(n)) return null
+  return n >>> 0
 }`
 
-export default function TextDiffPage() {
+export default function BitwiseCalculatorPage() {
   return (
     <main style={{ maxWidth: '960px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
       {/* JSON-LD: static structured data, no user input */}
@@ -90,7 +70,7 @@ export default function TextDiffPage() {
           textTransform: 'uppercase',
           marginBottom: '0.5rem',
         }}>
-          text / compare
+          calc / bitwise
         </div>
         <h1 style={{
           fontFamily: 'var(--font-cormorant), serif',
@@ -100,7 +80,7 @@ export default function TextDiffPage() {
           margin: 0,
           lineHeight: 1.1,
         }}>
-          テキスト差分ツール
+          ビット演算計算機
         </h1>
         <p style={{
           fontFamily: 'var(--font-noto-sans), sans-serif',
@@ -109,8 +89,8 @@ export default function TextDiffPage() {
           marginTop: '0.75rem',
           lineHeight: 1.6,
         }}>
-          2つのテキストを行単位で比較し、追加・削除・変更箇所をハイライト表示します。
-          LCS（最長共通部分列）アルゴリズムで実装。入力データはサーバーに送信されません。
+          AND・OR・XOR・NOT・左右シフトなどのビット演算をブラウザ上で計算します。
+          2進数・8進数・10進数・16進数で入力でき、結果はすべての基数で表示されます。入力データはサーバーに送信されません。
         </p>
       </div>
 
@@ -122,7 +102,7 @@ export default function TextDiffPage() {
         padding: '1.5rem',
         marginBottom: '3rem',
       }}>
-        <TextDiffTool />
+        <BitwiseCalculatorTool />
       </section>
 
       {/* 使い方 */}
@@ -136,11 +116,11 @@ export default function TextDiffPage() {
           paddingLeft: '1.5rem',
           margin: 0,
         }}>
-          <li>左側（旧テキスト）に変更前のテキストを入力します</li>
-          <li>右側（新テキスト）に変更後のテキストを入力します</li>
-          <li>「差分を計算」ボタンを押すと、2つのテキストの差分が表示されます</li>
-          <li>緑色の行（<code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'rgba(46,200,128,0.12)', padding: '1px 5px', borderRadius: '3px' }}>+</code>）が追加行、赤色の行（<code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'rgba(200,80,80,0.12)', padding: '1px 5px', borderRadius: '3px' }}>-</code>）が削除行です</li>
-          <li>左側の数字が旧テキストの行番号、右側の数字が新テキストの行番号です</li>
+          <li>「入力基数」で値の表記（2進数/8進数/10進数/16進数）を選択します</li>
+          <li>「演算子」ボタンで実行したいビット演算（AND/OR/XOR/NOT/LSHIFT/RSHIFT）を選びます</li>
+          <li>値Aを入力します（例：10進数モードなら <code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'var(--navy-light)', padding: '1px 5px', borderRadius: '3px' }}>255</code>）</li>
+          <li>NOT・RSHIFT 以外の演算では値Bも入力します</li>
+          <li>「計算する」ボタンを押すと、BIN・OCT・DEC・HEX の4形式で結果が表示されます</li>
         </ol>
       </section>
 
@@ -156,8 +136,7 @@ export default function TextDiffPage() {
           marginBottom: '1rem',
           lineHeight: 1.7,
         }}>
-          コアロジックはLCS（Longest Common Subsequence）アルゴリズムをJavaScriptのみで実装しています。
-          DPテーブルを構築後、バックトラックで差分を復元します。外部ライブラリは不要なので、そのままコピーしてご利用いただけます。
+          コアロジックはJavaScript組み込みのビット演算子と <code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'var(--navy-light)', padding: '1px 5px', borderRadius: '3px' }}>{`>>> 0`}</code> による符号なし32bit整数変換のみで実装しています。外部ライブラリ不要で、そのままコピーしてご利用いただけます。
         </p>
         <pre style={{
           backgroundColor: '#111820',
@@ -179,24 +158,24 @@ export default function TextDiffPage() {
         <SectionHeading title="よくある使用例・注意点" count="03" />
         <div style={{ display: 'grid', gap: '1rem' }}>
           <UsageNote
-            title="コードのレビューに使う"
-            body="プルリクエストのレビュー前に、変更前後のコードをここに貼り付けて差分を確認できます。ファイル全体をコピーして比較することで、細かい変更点を見逃しにくくなります。"
+            title="フラグ管理・パーミッションのデバッグ"
+            body="複数のフラグをビットフィールドで管理するコードのデバッグに使えます。例えばLinuxのファイルパーミッション（755 = 0b111_101_101）を8進数モードで入力し、ANDマスクを使って特定ビットを確認できます。"
           />
           <UsageNote
-            title="設定ファイルの比較"
-            body="サーバーやアプリの設定ファイルを比較するのに便利です。本番環境と開発環境の設定差異を素早く把握できます。"
+            title="ネットワークのサブネット計算"
+            body="IPアドレスとサブネットマスクのAND演算でネットワークアドレスを求める用途に使えます。例：192.168.1.100（10進数）AND 255.255.255.0（10進数）= ネットワークアドレス。各オクテットを個別に計算してご利用ください。"
           />
           <UsageNote
-            title="LCSアルゴリズムの特性"
-            body="このツールはLCS（最長共通部分列）アルゴリズムを使っています。行が完全に一致するかどうかで equal / added / removed を判定します。行内の細かい文字差分（インライン差分）は表示されません。空白の違いも1行の変更として扱われます。"
+            title=">>> 0 による符号なし32bit整数の扱い"
+            body="JavaScriptのビット演算は内部で符号付き32bit整数として処理されますが、このツールでは <code style='font-family:monospace;font-size:12px;background:rgba(27,45,79,0.1);padding:1px 4px;border-radius:3px'>>>> 0</code>（ゼロ埋め右シフト）を使って常に符号なし32bit整数（0〜4294967295）として扱います。そのため NOT 演算の結果も正の値になります。"
           />
           <UsageNote
-            title="大きなテキストの注意点"
-            body="LCSアルゴリズムは O(m×n) の時間・空間計算量があります。行数が数千行を超える大きなファイルを比較すると、ブラウザのメモリ消費が増加する場合があります。数百行以内の比較を推奨します。"
+            title="LSHIFT の桁あふれ"
+            body="左シフト（LSHIFT）は32bit整数の範囲内で動作します。32以上シフトすると結果が 0 になる場合があります。例：1 &lt;&lt; 31 = 2147483648（符号なし32bit最大の半分）、1 &lt;&lt; 32 = 0。"
           />
           <UsageNote
-            title="プライバシーについて"
-            body="入力したテキストはブラウザ内のみで処理されます。サーバーには一切送信されないため、機密情報を含むコードや設定ファイルも安全に比較できます。"
+            title="16進数入力のポイント"
+            body="16進数モードでは 'A'〜'F' を大文字・小文字どちらでも入力できます。'0x' プレフィックスは不要です。例：FF → 255、DEADBEEF → 3735928559。"
           />
         </div>
       </section>
@@ -205,10 +184,9 @@ export default function TextDiffPage() {
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="関連ツール" count="04" />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <RelatedToolBadge href="/character-count" label="文字数カウンター" />
-          <RelatedToolBadge href="/regex-tester" label="正規表現テスター" />
-          <RelatedToolBadge href="/json-formatter" label="JSONフォーマッター" />
-          <RelatedToolBadge href="/text-to-table" label="テキスト → テーブル変換" />
+          <RelatedToolBadge href="/number-base" label="進数変換" />
+          <RelatedToolBadge href="/byte-converter" label="Byte単位変換" />
+          <RelatedToolBadge href="/hash" label="ハッシュ生成" />
         </div>
       </section>
 
@@ -225,7 +203,7 @@ export default function TextDiffPage() {
           MITライセンスで自由に利用・改変できます。
         </p>
         <a
-          href="https://github.com/lylgamin/tool-nest/tree/main/app/text-diff"
+          href="https://github.com/lylgamin/tool-nest/tree/main/app/bitwise-calculator"
           target="_blank"
           rel="noopener noreferrer"
           style={{

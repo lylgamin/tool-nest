@@ -46,6 +46,16 @@ const tools = [
   { path: '/json-path',           lastModified: new Date('2026-03-17') },
   { path: '/password-strength',   lastModified: new Date('2026-03-17') },
   { path: '/color-converter',     lastModified: new Date('2026-03-18') },
+  { path: '/text-to-table',       lastModified: new Date('2026-03-18') },
+  { path: '/json-schema',         lastModified: new Date('2026-03-18') },
+  { path: '/text-lines',          lastModified: new Date('2026-03-18') },
+  { path: '/image-to-base64',     lastModified: new Date('2026-03-18') },
+  { path: '/json-diff',           lastModified: new Date('2026-03-18') },
+  { path: '/string-escape',       lastModified: new Date('2026-03-18') },
+  { path: '/bitwise-calculator',  lastModified: new Date('2026-03-18') },
+  { path: '/unit-converter',      lastModified: new Date('2026-03-18') },
+  { path: '/csp-generator',       lastModified: new Date('2026-03-18') },
+  { path: '/semver',              lastModified: new Date('2026-03-18') },
 ]
 
 const categories = [

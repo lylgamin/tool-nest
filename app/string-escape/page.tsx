@@ -1,80 +1,82 @@
 import type { Metadata } from 'next'
-import TextDiffTool from './_components/TextDiffTool'
+import StringEscapeTool from './_components/StringEscapeTool'
 import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
-  title: 'テキスト差分ツール — 2つのテキストを行単位で比較',
-  description: '2つのテキストを行単位で比較し、追加・削除・変更箇所をハイライト表示するWebツール。LCSアルゴリズム使用。入力データはサーバーに送信されません。',
+  title: '文字列エスケープ変換 — JS / JSON / Python / SQL対応',
+  description: 'JavaScript・JSON・Python・SQL の文字列エスケープ・アンエスケープをブラウザだけで変換。\\n \\t \\" \\\\ などの特殊文字を一括処理。入力データはサーバーに送信されません。',
   openGraph: {
-    title: 'テキスト差分ツール | tool-nest',
-    description: '2つのテキストを行単位で比較。追加・削除をブラウザ内で完結。LCSアルゴリズム実装。',
-    url: 'https://tool-nest.pages.dev/text-diff',
+    title: '文字列エスケープ変換 | tool-nest',
+    description: 'JS / JSON / Python / SQL の文字列エスケープ・アンエスケープをブラウザ内で完結。外部ライブラリ不使用。',
+    url: 'https://tool-nest.pages.dev/string-escape',
   },
 }
 
 const jsonLdString = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'テキスト差分ツール',
+  name: '文字列エスケープ変換',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Any',
-  description: '2つのテキストを行単位で比較し、差分をハイライト表示するWebツール。ブラウザのみで動作し、データはサーバーに送信されません。',
-  url: 'https://tool-nest.pages.dev/text-diff',
+  description: 'JavaScript・JSON・Python・SQL の文字列エスケープ・アンエスケープを行うWebツール。ブラウザのみで動作し、データはサーバーに送信されません。',
+  url: 'https://tool-nest.pages.dev/string-escape',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
   inLanguage: 'ja',
 })
 
-const coreLogicCode = `export type DiffKind = 'equal' | 'added' | 'removed'
-export interface DiffLine {
-  kind: DiffKind
-  lineOld: number | null  // 元テキストでの行番号（1始まり）
-  lineNew: number | null  // 新テキストでの行番号（1始まり）
-  content: string
+const coreLogicCode = `export type Lang = 'js' | 'json' | 'python' | 'sql'
+
+export function escapeString(input: string, lang: Lang): string {
+  switch (lang) {
+    case 'js':
+      return input
+        .replace(/\\\\/g, '\\\\\\\\')
+        .replace(/"/g, '\\\\"')
+        .replace(/\\n/g, '\\\\n')
+        .replace(/\\r/g, '\\\\r')
+        .replace(/\\t/g, '\\\\t')
+    case 'json':
+      return JSON.stringify(input).slice(1, -1)
+    case 'python':
+      return input
+        .replace(/\\\\/g, '\\\\\\\\')
+        .replace(/'/g, "\\\\'")
+        .replace(/\\n/g, '\\\\n')
+        .replace(/\\r/g, '\\\\r')
+        .replace(/\\t/g, '\\\\t')
+    case 'sql':
+      return input.replace(/'/g, "''")
+  }
 }
 
-/** LCS（最長共通部分列）アルゴリズムを使った行単位の差分計算 */
-export function diffLines(oldText: string, newText: string): DiffLine[] {
-  if (oldText === '' && newText === '') return []
-
-  const oldLines = oldText === '' ? [] : oldText.split('\\n')
-  const newLines = newText === '' ? [] : newText.split('\\n')
-  const m = oldLines.length
-  const n = newLines.length
-
-  // DPテーブルを構築（O(m*n) 時間・空間計算量）
-  const dp: number[][] = Array.from({ length: m + 1 }, () =>
-    new Array(n + 1).fill(0)
-  )
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (oldLines[i - 1] === newLines[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
+export function unescapeString(input: string, lang: Lang): Result<string> {
+  try {
+    switch (lang) {
+      case 'js':
+      case 'json': {
+        const parsed = JSON.parse('"' + input + '"')
+        return { ok: true, output: parsed }
+      }
+      case 'python': {
+        const result = input
+          .replace(/\\\\\\\\/g, '\\x00')
+          .replace(/\\\\'/g, "'")
+          .replace(/\\\\n/g, '\\n')
+          .replace(/\\\\r/g, '\\r')
+          .replace(/\\\\t/g, '\\t')
+          .replace(/\\x00/g, '\\\\')
+        return { ok: true, output: result }
+      }
+      case 'sql': {
+        return { ok: true, output: input.replace(/''/g, "'") }
       }
     }
+  } catch {
+    return { ok: false, error: 'アンエスケープに失敗しました。' }
   }
-
-  // バックトラックで差分を生成
-  const result: DiffLine[] = []
-  let i = m
-  let j = n
-  while (i > 0 || j > 0) {
-    if (i > 0 && j > 0 && oldLines[i - 1] === newLines[j - 1]) {
-      result.push({ kind: 'equal', lineOld: i, lineNew: j, content: oldLines[i - 1] })
-      i--; j--
-    } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
-      result.push({ kind: 'added', lineOld: null, lineNew: j, content: newLines[j - 1] })
-      j--
-    } else {
-      result.push({ kind: 'removed', lineOld: i, lineNew: null, content: oldLines[i - 1] })
-      i--
-    }
-  }
-  return result.reverse()
 }`
 
-export default function TextDiffPage() {
+export default function StringEscapePage() {
   return (
     <main style={{ maxWidth: '960px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
       {/* JSON-LD: static structured data, no user input */}
@@ -90,7 +92,7 @@ export default function TextDiffPage() {
           textTransform: 'uppercase',
           marginBottom: '0.5rem',
         }}>
-          text / compare
+          encode / string
         </div>
         <h1 style={{
           fontFamily: 'var(--font-cormorant), serif',
@@ -100,7 +102,7 @@ export default function TextDiffPage() {
           margin: 0,
           lineHeight: 1.1,
         }}>
-          テキスト差分ツール
+          文字列エスケープ変換
         </h1>
         <p style={{
           fontFamily: 'var(--font-noto-sans), sans-serif',
@@ -109,8 +111,15 @@ export default function TextDiffPage() {
           marginTop: '0.75rem',
           lineHeight: 1.6,
         }}>
-          2つのテキストを行単位で比較し、追加・削除・変更箇所をハイライト表示します。
-          LCS（最長共通部分列）アルゴリズムで実装。入力データはサーバーに送信されません。
+          JavaScript・JSON・Python・SQL の文字列エスケープ・アンエスケープをブラウザだけで変換。
+          <code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'var(--navy-light)', padding: '1px 5px', borderRadius: '3px' }}>{'\\n'}</code>
+          {' '}
+          <code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'var(--navy-light)', padding: '1px 5px', borderRadius: '3px' }}>{'\\t'}</code>
+          {' '}
+          <code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'var(--navy-light)', padding: '1px 5px', borderRadius: '3px' }}>{'\\"'}</code>
+          {' '}
+          <code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'var(--navy-light)', padding: '1px 5px', borderRadius: '3px' }}>{"\\'"}</code>
+          などの特殊文字に対応。入力データはサーバーに送信されません。
         </p>
       </div>
 
@@ -122,7 +131,7 @@ export default function TextDiffPage() {
         padding: '1.5rem',
         marginBottom: '3rem',
       }}>
-        <TextDiffTool />
+        <StringEscapeTool />
       </section>
 
       {/* 使い方 */}
@@ -136,11 +145,11 @@ export default function TextDiffPage() {
           paddingLeft: '1.5rem',
           margin: 0,
         }}>
-          <li>左側（旧テキスト）に変更前のテキストを入力します</li>
-          <li>右側（新テキスト）に変更後のテキストを入力します</li>
-          <li>「差分を計算」ボタンを押すと、2つのテキストの差分が表示されます</li>
-          <li>緑色の行（<code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'rgba(46,200,128,0.12)', padding: '1px 5px', borderRadius: '3px' }}>+</code>）が追加行、赤色の行（<code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'rgba(200,80,80,0.12)', padding: '1px 5px', borderRadius: '3px' }}>-</code>）が削除行です</li>
-          <li>左側の数字が旧テキストの行番号、右側の数字が新テキストの行番号です</li>
+          <li>変換対象の言語（JS / JSON / Python / SQL）を選択します</li>
+          <li>「エスケープ」または「アンエスケープ」のモードを選択します</li>
+          <li>テキストエリアに変換したい文字列を入力します</li>
+          <li>ボタンを押すと、変換結果が出力エリアに表示されます</li>
+          <li>「コピー」ボタンで結果をクリップボードにコピーできます</li>
         </ol>
       </section>
 
@@ -156,8 +165,8 @@ export default function TextDiffPage() {
           marginBottom: '1rem',
           lineHeight: 1.7,
         }}>
-          コアロジックはLCS（Longest Common Subsequence）アルゴリズムをJavaScriptのみで実装しています。
-          DPテーブルを構築後、バックトラックで差分を復元します。外部ライブラリは不要なので、そのままコピーしてご利用いただけます。
+          コアロジックは標準ブラウザAPI（<code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px' }}>JSON.stringify / JSON.parse</code>）と正規表現のみで実装しています。
+          外部ライブラリは不要なので、そのままコピーしてご利用いただけます。
         </p>
         <pre style={{
           backgroundColor: '#111820',
@@ -179,24 +188,24 @@ export default function TextDiffPage() {
         <SectionHeading title="よくある使用例・注意点" count="03" />
         <div style={{ display: 'grid', gap: '1rem' }}>
           <UsageNote
-            title="コードのレビューに使う"
-            body="プルリクエストのレビュー前に、変更前後のコードをここに貼り付けて差分を確認できます。ファイル全体をコピーして比較することで、細かい変更点を見逃しにくくなります。"
+            title="SQLインジェクション対策での利用"
+            body="SQL の文字列リテラルにユーザー入力を埋め込む際は、シングルクォートを '' にエスケープする必要があります。このツールでSQLエスケープの動作を素早く確認できます。プロダクションコードではプリペアドステートメントの利用を推奨します。"
           />
           <UsageNote
-            title="設定ファイルの比較"
-            body="サーバーやアプリの設定ファイルを比較するのに便利です。本番環境と開発環境の設定差異を素早く把握できます。"
+            title="JSONデータのデバッグに使う"
+            body="APIレスポンスやログに含まれるエスケープ済み文字列をアンエスケープして、実際の値を確認するのに便利です。JSON モードでは JSON.parse と同等の処理を行うため、標準的なJSONエスケープに完全対応しています。"
           />
           <UsageNote
-            title="LCSアルゴリズムの特性"
-            body="このツールはLCS（最長共通部分列）アルゴリズムを使っています。行が完全に一致するかどうかで equal / added / removed を判定します。行内の細かい文字差分（インライン差分）は表示されません。空白の違いも1行の変更として扱われます。"
+            title="JS と JSON のエスケープの違い"
+            body="JS モードはダブルクォート文字列向けのエスケープです。JSON モードは JSON.stringify 相当で、制御文字（U+0000〜U+001F）もエスケープします。通常のユースケースでは両者の差はほとんどありませんが、制御文字を含む場合は JSON モードを推奨します。"
           />
           <UsageNote
-            title="大きなテキストの注意点"
-            body="LCSアルゴリズムは O(m×n) の時間・空間計算量があります。行数が数千行を超える大きなファイルを比較すると、ブラウザのメモリ消費が増加する場合があります。数百行以内の比較を推奨します。"
+            title="Python の文字列エスケープ"
+            body="Python モードはシングルクォート文字列向けのエスケープです。バックスラッシュ・シングルクォート・改行・タブに対応しています。raw文字列（r'...'）やトリプルクォートには対応していません。"
           />
           <UsageNote
             title="プライバシーについて"
-            body="入力したテキストはブラウザ内のみで処理されます。サーバーには一切送信されないため、機密情報を含むコードや設定ファイルも安全に比較できます。"
+            body="入力したテキストはブラウザ内のみで処理されます。サーバーには一切送信されないため、APIキーやパスワードなどの機密情報も安全に変換できます。"
           />
         </div>
       </section>
@@ -205,10 +214,9 @@ export default function TextDiffPage() {
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="関連ツール" count="04" />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <RelatedToolBadge href="/character-count" label="文字数カウンター" />
-          <RelatedToolBadge href="/regex-tester" label="正規表現テスター" />
-          <RelatedToolBadge href="/json-formatter" label="JSONフォーマッター" />
-          <RelatedToolBadge href="/text-to-table" label="テキスト → テーブル変換" />
+          <RelatedToolBadge href="/url-encode" label="URLエンコード/デコード" />
+          <RelatedToolBadge href="/html-escape" label="HTMLエスケープ" />
+          <RelatedToolBadge href="/base64" label="Base64エンコード/デコード" />
         </div>
       </section>
 
@@ -225,7 +233,7 @@ export default function TextDiffPage() {
           MITライセンスで自由に利用・改変できます。
         </p>
         <a
-          href="https://github.com/lylgamin/tool-nest/tree/main/app/text-diff"
+          href="https://github.com/lylgamin/tool-nest/tree/main/app/string-escape"
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -294,15 +302,14 @@ function UsageNote({ title, body }: { title: string; body: string }) {
       }}>
         {title}
       </div>
-      <div
-        style={{
-          fontFamily: 'var(--font-noto-sans), sans-serif',
-          fontSize: '13px',
-          color: 'var(--ink-mid)',
-          lineHeight: 1.7,
-        }}
-        dangerouslySetInnerHTML={{ __html: body }}
-      />
+      <div style={{
+        fontFamily: 'var(--font-noto-sans), sans-serif',
+        fontSize: '13px',
+        color: 'var(--ink-mid)',
+        lineHeight: 1.7,
+      }}>
+        {body}
+      </div>
     </div>
   )
 }

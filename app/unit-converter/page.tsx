@@ -1,80 +1,61 @@
 import type { Metadata } from 'next'
-import TextDiffTool from './_components/TextDiffTool'
+import UnitConverterTool from './_components/UnitConverterTool'
 import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
-  title: 'テキスト差分ツール — 2つのテキストを行単位で比較',
-  description: '2つのテキストを行単位で比較し、追加・削除・変更箇所をハイライト表示するWebツール。LCSアルゴリズム使用。入力データはサーバーに送信されません。',
+  title: '単位変換ツール — 長さ・重量・温度・速度・面積をまとめて変換',
+  description: '長さ・重量・温度・速度・面積の単位をブラウザ内で即時変換。mm/cm/m/km/inch/ft/mile、kg/g/lb/oz、°C/°F/K など全単位への一括変換結果を表示。入力データはサーバーに送信されません。',
   openGraph: {
-    title: 'テキスト差分ツール | tool-nest',
-    description: '2つのテキストを行単位で比較。追加・削除をブラウザ内で完結。LCSアルゴリズム実装。',
-    url: 'https://tool-nest.pages.dev/text-diff',
+    title: '単位変換ツール | tool-nest',
+    description: '長さ・重量・温度・速度・面積の単位を即時変換。全単位への一括変換結果テーブルも表示。',
+    url: 'https://tool-nest.pages.dev/unit-converter',
   },
 }
 
 const jsonLdString = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'テキスト差分ツール',
+  name: '単位変換ツール',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Any',
-  description: '2つのテキストを行単位で比較し、差分をハイライト表示するWebツール。ブラウザのみで動作し、データはサーバーに送信されません。',
-  url: 'https://tool-nest.pages.dev/text-diff',
+  description: '長さ・重量・温度・速度・面積の単位をリアルタイムで変換するWebツール。全単位への一括変換結果も表示。ブラウザのみで動作し、データはサーバーに送信されません。',
+  url: 'https://tool-nest.pages.dev/unit-converter',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
   inLanguage: 'ja',
 })
 
-const coreLogicCode = `export type DiffKind = 'equal' | 'added' | 'removed'
-export interface DiffLine {
-  kind: DiffKind
-  lineOld: number | null  // 元テキストでの行番号（1始まり）
-  lineNew: number | null  // 新テキストでの行番号（1始まり）
-  content: string
+const coreLogicCode = `export type UnitCategory = 'length' | 'weight' | 'temperature' | 'speed' | 'area'
+
+export type UnitDef = {
+  id: string
+  label: string
+  toBase: (v: number) => number   // 基準単位へ変換
+  fromBase: (v: number) => number // 基準単位から変換
 }
 
-/** LCS（最長共通部分列）アルゴリズムを使った行単位の差分計算 */
-export function diffLines(oldText: string, newText: string): DiffLine[] {
-  if (oldText === '' && newText === '') return []
+// 長さの基準単位: メートル (m)
+// 重量の基準単位: キログラム (kg)
+// 温度の基準単位: 摂氏 (°C)
+// 速度の基準単位: m/s
+// 面積の基準単位: m²
 
-  const oldLines = oldText === '' ? [] : oldText.split('\\n')
-  const newLines = newText === '' ? [] : newText.split('\\n')
-  const m = oldLines.length
-  const n = newLines.length
-
-  // DPテーブルを構築（O(m*n) 時間・空間計算量）
-  const dp: number[][] = Array.from({ length: m + 1 }, () =>
-    new Array(n + 1).fill(0)
-  )
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (oldLines[i - 1] === newLines[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
-      }
-    }
-  }
-
-  // バックトラックで差分を生成
-  const result: DiffLine[] = []
-  let i = m
-  let j = n
-  while (i > 0 || j > 0) {
-    if (i > 0 && j > 0 && oldLines[i - 1] === newLines[j - 1]) {
-      result.push({ kind: 'equal', lineOld: i, lineNew: j, content: oldLines[i - 1] })
-      i--; j--
-    } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
-      result.push({ kind: 'added', lineOld: null, lineNew: j, content: newLines[j - 1] })
-      j--
-    } else {
-      result.push({ kind: 'removed', lineOld: i, lineNew: null, content: oldLines[i - 1] })
-      i--
-    }
-  }
-  return result.reverse()
+export function convert(
+  value: number,
+  fromId: string,
+  toId: string,
+  category: UnitCategory
+): number {
+  const units = UNIT_DEFS[category]
+  const from = units.find(u => u.id === fromId)
+  const to   = units.find(u => u.id === toId)
+  if (!from || !to) throw new Error(\`Unknown unit: \${fromId} or \${toId}\`)
+  // 1. 入力値を基準単位に変換
+  const baseValue = from.toBase(value)
+  // 2. 基準単位から目的単位へ変換
+  return to.fromBase(baseValue)
 }`
 
-export default function TextDiffPage() {
+export default function UnitConverterPage() {
   return (
     <main style={{ maxWidth: '960px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
       {/* JSON-LD: static structured data, no user input */}
@@ -90,7 +71,7 @@ export default function TextDiffPage() {
           textTransform: 'uppercase',
           marginBottom: '0.5rem',
         }}>
-          text / compare
+          calc / unit
         </div>
         <h1 style={{
           fontFamily: 'var(--font-cormorant), serif',
@@ -100,7 +81,7 @@ export default function TextDiffPage() {
           margin: 0,
           lineHeight: 1.1,
         }}>
-          テキスト差分ツール
+          単位変換ツール
         </h1>
         <p style={{
           fontFamily: 'var(--font-noto-sans), sans-serif',
@@ -109,8 +90,8 @@ export default function TextDiffPage() {
           marginTop: '0.75rem',
           lineHeight: 1.6,
         }}>
-          2つのテキストを行単位で比較し、追加・削除・変更箇所をハイライト表示します。
-          LCS（最長共通部分列）アルゴリズムで実装。入力データはサーバーに送信されません。
+          長さ・重量・温度・速度・面積の単位をリアルタイムで変換します。
+          入力すると全単位への一括変換結果を一覧表示。入力データはサーバーに送信されません。
         </p>
       </div>
 
@@ -122,7 +103,7 @@ export default function TextDiffPage() {
         padding: '1.5rem',
         marginBottom: '3rem',
       }}>
-        <TextDiffTool />
+        <UnitConverterTool />
       </section>
 
       {/* 使い方 */}
@@ -136,11 +117,11 @@ export default function TextDiffPage() {
           paddingLeft: '1.5rem',
           margin: 0,
         }}>
-          <li>左側（旧テキスト）に変更前のテキストを入力します</li>
-          <li>右側（新テキスト）に変更後のテキストを入力します</li>
-          <li>「差分を計算」ボタンを押すと、2つのテキストの差分が表示されます</li>
-          <li>緑色の行（<code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'rgba(46,200,128,0.12)', padding: '1px 5px', borderRadius: '3px' }}>+</code>）が追加行、赤色の行（<code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'rgba(200,80,80,0.12)', padding: '1px 5px', borderRadius: '3px' }}>-</code>）が削除行です</li>
-          <li>左側の数字が旧テキストの行番号、右側の数字が新テキストの行番号です</li>
+          <li>上部のタブからカテゴリ（長さ・重量・温度・速度・面積）を選択します</li>
+          <li>「変換元」フィールドに数値を入力します</li>
+          <li>変換元と変換先の単位をプルダウンから選択します</li>
+          <li>入力と同時にリアルタイムで変換結果が表示されます</li>
+          <li>下部のテーブルには、選択した変換元単位から全単位への変換結果が一覧表示されます</li>
         </ol>
       </section>
 
@@ -156,8 +137,7 @@ export default function TextDiffPage() {
           marginBottom: '1rem',
           lineHeight: 1.7,
         }}>
-          コアロジックはLCS（Longest Common Subsequence）アルゴリズムをJavaScriptのみで実装しています。
-          DPテーブルを構築後、バックトラックで差分を復元します。外部ライブラリは不要なので、そのままコピーしてご利用いただけます。
+          変換ロジックは「基準単位を経由する2段階変換」で実装しています。各カテゴリに基準単位（長さはm、重量はkg、温度は°C、速度はm/s、面積はm²）を設け、入力値を一旦基準単位に変換してから目的単位へ変換します。外部ライブラリは不要です。
         </p>
         <pre style={{
           backgroundColor: '#111820',
@@ -179,24 +159,24 @@ export default function TextDiffPage() {
         <SectionHeading title="よくある使用例・注意点" count="03" />
         <div style={{ display: 'grid', gap: '1rem' }}>
           <UsageNote
-            title="コードのレビューに使う"
-            body="プルリクエストのレビュー前に、変更前後のコードをここに貼り付けて差分を確認できます。ファイル全体をコピーして比較することで、細かい変更点を見逃しにくくなります。"
+            title="海外レシピの重量変換"
+            body="英語レシピで使われるオンス (oz) やポンド (lb) をグラムに変換するのに便利です。例えば 8 oz = 226.8 g のように確認できます。"
           />
           <UsageNote
-            title="設定ファイルの比較"
-            body="サーバーやアプリの設定ファイルを比較するのに便利です。本番環境と開発環境の設定差異を素早く把握できます。"
+            title="気温の確認（°C / °F）"
+            body="海外の天気予報や設定値で表示される華氏 (°F) を摂氏 (°C) に変換できます。100°F は約 37.8°C（体温に近い）、-40°F と -40°C は同一値です。"
           />
           <UsageNote
-            title="LCSアルゴリズムの特性"
-            body="このツールはLCS（最長共通部分列）アルゴリズムを使っています。行が完全に一致するかどうかで equal / added / removed を判定します。行内の細かい文字差分（インライン差分）は表示されません。空白の違いも1行の変更として扱われます。"
+            title="速度変換（km/h ↔ mph ↔ knot）"
+            body="海外ナビや航空・航海アプリで使われる mph やノットを km/h に変換できます。高速道路の 100 km/h は約 62.1 mph、1 knot = 1.852 km/h です。"
           />
           <UsageNote
-            title="大きなテキストの注意点"
-            body="LCSアルゴリズムは O(m×n) の時間・空間計算量があります。行数が数千行を超える大きなファイルを比較すると、ブラウザのメモリ消費が増加する場合があります。数百行以内の比較を推奨します。"
+            title="土地面積の変換（ha / acre）"
+            body="不動産や農業分野で使われるヘクタール (ha) やエーカー (acre) を m² や km² に変換できます。1 ha = 10,000 m²、1 acre ≒ 4,047 m² です。"
           />
           <UsageNote
-            title="プライバシーについて"
-            body="入力したテキストはブラウザ内のみで処理されます。サーバーには一切送信されないため、機密情報を含むコードや設定ファイルも安全に比較できます。"
+            title="浮動小数点精度について"
+            body="JavaScriptの IEEE 754 浮動小数点演算を使用しているため、変換結果に微小な誤差が生じる場合があります（例：0.1 + 0.2 = 0.30000000000000004 の問題）。精密計算が必要な場合は専用ツールをご利用ください。"
           />
         </div>
       </section>
@@ -205,10 +185,9 @@ export default function TextDiffPage() {
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="関連ツール" count="04" />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <RelatedToolBadge href="/character-count" label="文字数カウンター" />
-          <RelatedToolBadge href="/regex-tester" label="正規表現テスター" />
-          <RelatedToolBadge href="/json-formatter" label="JSONフォーマッター" />
-          <RelatedToolBadge href="/text-to-table" label="テキスト → テーブル変換" />
+          <RelatedToolBadge href="/byte-converter" label="Byte単位変換" />
+          <RelatedToolBadge href="/number-base" label="進数変換" />
+          <RelatedToolBadge href="/date-diff" label="日時差分計算" />
         </div>
       </section>
 
@@ -225,7 +204,7 @@ export default function TextDiffPage() {
           MITライセンスで自由に利用・改変できます。
         </p>
         <a
-          href="https://github.com/lylgamin/tool-nest/tree/main/app/text-diff"
+          href="https://github.com/lylgamin/tool-nest/tree/main/app/unit-converter"
           target="_blank"
           rel="noopener noreferrer"
           style={{
