@@ -55,15 +55,15 @@ export const CATEGORIES: Category[] = [
     id: "calc",
     label: "計算",
     icon: "#",
-    count: 11,
-    description: "営業日計算・Byte変換・パスワード強度など計算ツール",
+    count: 13,
+    description: "営業日計算・Byte変換・消費税・割合計算など計算ツール",
   },
   {
     id: "ref",
     label: "リファレンス",
     icon: "?",
-    count: 2,
-    description: "HTTPステータスコード・OGPプレビューなどリファレンスツール",
+    count: 3,
+    description: "HTTPステータスコード・ポート番号・OGPプレビューなどリファレンスツール",
   },
 ]
 
@@ -525,6 +525,33 @@ export const TOOLS: Tool[] = [
       "Content Security Policyヘッダーを10ディレクティブのGUIで生成・編集。既存CSPのインポート・パース機能付き。",
     category: "generate",
     href: "/csp-generator",
+    ready: true,
+  },
+  {
+    id: "tax-calculator",
+    title: "消費税計算",
+    description:
+      "税抜き価格から税込み価格、税込み価格から税抜き価格を計算。消費税10%・軽減税率8%・端数処理（切り捨て/切り上げ/四捨五入）に対応。",
+    category: "calc",
+    href: "/tax-calculator",
+    ready: true,
+  },
+  {
+    id: "percentage-calculator",
+    title: "割合・パーセント計算",
+    description:
+      "割合計算・増減率計算・逆算など4パターンに対応。消費増税・割引率・達成率など業務でよく使うパーセント計算を手軽に。",
+    category: "calc",
+    href: "/percentage-calculator",
+    ready: true,
+  },
+  {
+    id: "port-numbers",
+    title: "ポート番号一覧",
+    description:
+      "TCP/UDPポート番号の用途を検索できます。Well-Known（0-1023）・Registered（1024-49151）の主要サービスをキーワード・カテゴリで絞り込み。",
+    category: "ref",
+    href: "/port-numbers",
     ready: true,
   },
 ]

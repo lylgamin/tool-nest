@@ -56,6 +56,9 @@ const tools = [
   { path: '/unit-converter',      lastModified: new Date('2026-03-18') },
   { path: '/csp-generator',       lastModified: new Date('2026-03-18') },
   { path: '/semver',              lastModified: new Date('2026-03-18') },
+  { path: '/tax-calculator',      lastModified: new Date('2026-03-18') },
+  { path: '/percentage-calculator', lastModified: new Date('2026-03-18') },
+  { path: '/port-numbers',        lastModified: new Date('2026-03-18') },
 ]
 
 const categories = [
