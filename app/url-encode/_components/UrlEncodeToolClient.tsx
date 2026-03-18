@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import { encodeUrlComponent, decodeUrlComponent } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 type Tab = 'encode' | 'decode'
 
 export default function UrlEncodeToolClient() {
   const [tab, setTab] = useState<Tab>('encode')
   const [input, setInput] = useState('')
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const output: string = (() => {
     if (!input) return ''
@@ -27,21 +28,16 @@ export default function UrlEncodeToolClient() {
 
   const handleCopy = () => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    })
+    copy(output)
   }
 
   const handleClear = () => {
     setInput('')
-    setCopied(false)
   }
 
   const handleTabChange = (next: Tab) => {
     setTab(next)
     setInput('')
-    setCopied(false)
   }
 
   return (

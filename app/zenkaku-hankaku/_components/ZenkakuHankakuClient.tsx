@@ -2,26 +2,23 @@
 
 import { useState } from 'react';
 import { toHankaku, toZenkaku } from '../utils';
+import { useCopy } from '../../_components/useCopy';
 
 type Tab = 'toHankaku' | 'toZenkaku';
 
 export default function ZenkakuHankakuClient() {
   const [tab, setTab] = useState<Tab>('toHankaku');
   const [input, setInput] = useState('');
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopy();
 
   const output = tab === 'toHankaku' ? toHankaku(input) : toZenkaku(input);
 
   function handleCopy() {
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    });
+    copy(output);
   }
 
   function handleClear() {
     setInput('');
-    setCopied(false);
   }
 
   const tabStyle = (active: boolean): React.CSSProperties => ({

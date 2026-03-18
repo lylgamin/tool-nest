@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { csvToJson, jsonToCsv, parseCsv } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 type Direction = 'csv-to-json' | 'json-to-csv'
 
@@ -10,7 +11,7 @@ export default function CsvJsonTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
   const [preview, setPreview] = useState<string[][] | null>(null)
 
   const handleConvert = useCallback(() => {
@@ -43,16 +44,13 @@ export default function CsvJsonTool() {
   }, [direction, input])
 
   const handleClear = useCallback(() => {
-    setInput(''); setOutput(''); setError(null); setCopied(false); setPreview(null)
+    setInput(''); setOutput(''); setError(null); setPreview(null)
   }, [])
 
   const handleCopy = useCallback(() => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [output])
+    copy(output)
+  }, [output, copy])
 
   return (
     <div>

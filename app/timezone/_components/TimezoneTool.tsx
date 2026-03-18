@@ -3,12 +3,13 @@
 import { useState } from 'react'
 import { TIMEZONES, convertAllTimezones, parseToUnixMs } from '../utils'
 import type { ConvertedTime } from '../utils'
+import { useStringCopy } from '../../_components/useCopy'
 
 export default function TimezoneTool() {
   const [dateInput, setDateInput] = useState('2024-01-01')
   const [timeInput, setTimeInput] = useState('00:00:00')
   const [sourceTz, setSourceTz]   = useState('JST')
-  const [copied, setCopied]       = useState<string | null>(null)
+  const { copiedKey: copied, copy } = useStringCopy()
 
   let results: ConvertedTime[] | null = null
   let error: string | null = null
@@ -36,10 +37,7 @@ export default function TimezoneTool() {
   }
 
   function handleCopy(text: string, id: string) {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(id)
-      setTimeout(() => setCopied(null), 1500)
-    })
+    copy(id, text)
   }
 
   const inputStyle = {

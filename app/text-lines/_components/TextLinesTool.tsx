@@ -9,6 +9,7 @@ import {
   removeEmptyLines,
   trimLines,
 } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 type Operation =
   | 'deduplicate'
@@ -23,7 +24,7 @@ export default function TextLinesTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [caseSensitive, setCaseSensitive] = useState(true)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
   const [lastOp, setLastOp] = useState<Operation | null>(null)
 
   const applyOperation = useCallback(
@@ -60,11 +61,8 @@ export default function TextLinesTool() {
 
   const handleCopy = useCallback(() => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    })
-  }, [output])
+    copy(output)
+  }, [output, copy])
 
   const handleClear = useCallback(() => {
     setInput('')

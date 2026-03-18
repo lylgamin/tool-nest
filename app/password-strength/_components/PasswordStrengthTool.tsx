@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { analyzePassword, type StrengthLevel } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 const STRENGTH_COLORS: Record<StrengthLevel, string> = {
   'very-weak':   '#c85050',
@@ -22,7 +23,7 @@ const STRENGTH_FILL: Record<StrengthLevel, number> = {
 export default function PasswordStrengthTool() {
   const [password, setPassword]   = useState('')
   const [visible, setVisible]     = useState(false)
-  const [copied, setCopied]       = useState(false)
+  const { copied, copy } = useCopy()
 
   const analysis = analyzePassword(password)
   const color    = STRENGTH_COLORS[analysis.level]
@@ -31,10 +32,7 @@ export default function PasswordStrengthTool() {
 
   function handleCopy() {
     if (!hasInput) return
-    navigator.clipboard.writeText(password).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    })
+    copy(password)
   }
 
   const checkItems = [

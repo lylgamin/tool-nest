@@ -24,6 +24,37 @@ const jsonLdString = JSON.stringify({
   inLanguage: 'ja',
 })
 
+const faqLdString = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Base64とは何ですか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Base64は、バイナリデータを64種類のASCII文字（A–Z, a–z, 0–9, +, /）で表現するエンコード方式です。メールや画像のデータURL、JWTなどで広く使われています。',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Base64はどのくらいデータ量が増えますか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Base64エンコードすると元のデータの約1.33倍（4/3倍）のサイズになります。3バイトを4文字に変換するためです。',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Base64は暗号化ですか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'いいえ。Base64はエンコード（符号化）であり、暗号化ではありません。誰でも簡単にデコードできるため、秘密情報の保護には使用しないでください。',
+      },
+    },
+  ],
+})
+
 const coreCode = `// エンコード: TextEncoder → Uint8Array → binary string → btoa
 export function encodeBase64(input: string): string {
   const bytes = new TextEncoder().encode(input)
@@ -60,6 +91,7 @@ export default function Base64Page() {
     <main style={{ maxWidth: '860px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
       {/* JSON-LD: static structured data, no user input */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqLdString }} />
 
       {/* ページヘッダー */}
       <div style={{ marginBottom: '2rem' }}>

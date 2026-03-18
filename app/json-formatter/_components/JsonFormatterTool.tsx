@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from 'react'
 import { formatJson, minifyJson, validateJson } from '../utils'
+import { useCopy } from '../../_components/useCopy'
+import { useLocalInput } from '../../_components/useLocalInput'
 
 type IndentOption = 2 | 4 | '\t'
 
@@ -12,12 +14,12 @@ const INDENT_LABELS: { value: IndentOption; label: string }[] = [
 ]
 
 export default function JsonFormatterTool() {
-  const [input, setInput] = useState('')
+  const [input, setInput, clearInput] = useLocalInput('json-formatter')
   const [output, setOutput] = useState('')
   const [indent, setIndent] = useState<IndentOption>(2)
   const [error, setError] = useState<string | null>(null)
   const [isValid, setIsValid] = useState<boolean | null>(null)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const handleFormat = useCallback(() => {
     const indentValue = indent === '\t' ? '\t' : indent
@@ -47,20 +49,16 @@ export default function JsonFormatterTool() {
   }, [input])
 
   const handleClear = useCallback(() => {
-    setInput('')
+    clearInput()
     setOutput('')
     setError(null)
     setIsValid(null)
-    setCopied(false)
-  }, [])
+  }, [clearInput])
 
   const handleCopy = useCallback(() => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [output])
+    copy(output)
+  }, [output, copy])
 
   const handleInputChange = useCallback((val: string) => {
     setInput(val)

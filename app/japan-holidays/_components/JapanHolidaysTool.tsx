@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import { getHolidays, holidaysToText } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 export default function JapanHolidaysTool() {
   const [year, setYear] = useState(String(new Date().getFullYear()))
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
   const [calculated, setCalculated] = useState(false)
 
   const y = parseInt(year, 10)
@@ -18,10 +19,7 @@ export default function JapanHolidaysTool() {
 
   const handleCopy = () => {
     const text = holidaysToText(holidays)
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
+    copy(text)
   }
 
   return (

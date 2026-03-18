@@ -2,11 +2,12 @@
 
 import { useState, useCallback, useMemo } from 'react'
 import { TEMPLATES, generateGitignore } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 export default function GitignoreGeneratorTool() {
   const [selected, setSelected] = useState<string[]>(['node'])
   const [includeCommon, setIncludeCommon] = useState(true)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const output = useMemo(() => generateGitignore(selected, includeCommon), [selected, includeCommon])
 
@@ -16,11 +17,8 @@ export default function GitignoreGeneratorTool() {
 
   const handleCopy = useCallback(() => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [output])
+    copy(output)
+  }, [output, copy])
 
   const handleDownload = useCallback(() => {
     if (!output) return

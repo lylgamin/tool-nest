@@ -2,24 +2,21 @@
 
 import { useState } from 'react'
 import { parseUrl, type ParsedUrl } from '../utils'
+import { useStringCopy } from '../../_components/useCopy'
 
 export default function UrlParserClient() {
   const [input, setInput] = useState('')
-  const [copiedField, setCopiedField] = useState<string | null>(null)
+  const { copiedKey: copiedField, copy } = useStringCopy()
 
   const result = parseUrl(input)
 
   const handleCopy = (value: string, field: string) => {
     if (!value) return
-    navigator.clipboard.writeText(value).then(() => {
-      setCopiedField(field)
-      setTimeout(() => setCopiedField(null), 1500)
-    })
+    copy(field, value)
   }
 
   const handleClear = () => {
     setInput('')
-    setCopiedField(null)
   }
 
   const parsed = result.ok ? result.parsed : null

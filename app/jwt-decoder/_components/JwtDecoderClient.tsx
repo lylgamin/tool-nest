@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
 import { decodeJwt, formatExpiry } from '../utils'
 import type { JwtDecodeResult } from '../utils'
+import { useCopy } from '../../_components/useCopy'
+import { useQueryState } from '../../_components/useQueryState'
 
 const SAMPLE_JWT =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9' +
@@ -29,8 +30,8 @@ const jsonStyle: React.CSSProperties = {
 }
 
 export default function JwtDecoderClient() {
-  const [token, setToken] = useState('')
-  const [copied, setCopied] = useState(false)
+  const [token, setToken] = useQueryState('t', '')
+  const { copied, copy } = useCopy()
 
   const result: JwtDecodeResult | null = token.trim() ? decodeJwt(token) : null
 
@@ -41,16 +42,10 @@ export default function JwtDecoderClient() {
       null,
       2
     )
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    })
+    copy(text)
   }
 
-  const handleClear = () => {
-    setToken('')
-    setCopied(false)
-  }
+  const handleClear = () => setToken('')
 
   return (
     <div>
@@ -132,7 +127,7 @@ export default function JwtDecoderClient() {
               fontFamily: 'var(--font-jetbrains), monospace',
               fontSize: '11px',
               letterSpacing: '0.08em',
-              color: copied ? '#2ec880' : 'var(--ink-light)',
+              color: copied ? 'var(--teal)' : 'var(--ink-light)',
               background: 'none',
               border: '1px solid var(--border-light)',
               borderRadius: '3px',

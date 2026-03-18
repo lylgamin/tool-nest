@@ -9,6 +9,7 @@ import {
   type PasswordOptions,
   type StrengthLevel,
 } from '../utils'
+import { useCopy, useIndexedCopy } from '../../_components/useCopy'
 
 const STRENGTH_COLORS: Record<StrengthLevel, string> = {
   'very-weak':   '#e53e3e',
@@ -36,9 +37,9 @@ export default function PasswordGeneratorClient() {
   })
   const [password, setPassword] = useState('')
   const [visible, setVisible] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
   const [bulkPasswords, setBulkPasswords] = useState<string[]>([])
-  const [bulkCopied, setBulkCopied] = useState<number | null>(null)
+  const { copiedIdx, copy: bulkCopy } = useIndexedCopy()
 
   const generate = useCallback(() => {
     setPassword(generatePassword(options))
@@ -62,22 +63,12 @@ export default function PasswordGeneratorClient() {
   const fill = STRENGTH_FILL[level]
 
   function handleCopy() {
-    navigator.clipboard.writeText(password).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    })
+    copy(password)
   }
 
   function handleBulkGenerate() {
     const list = Array.from({ length: 5 }, () => generatePassword(options))
     setBulkPasswords(list)
-  }
-
-  function handleBulkCopy(idx: number, pw: string) {
-    navigator.clipboard.writeText(pw).then(() => {
-      setBulkCopied(idx)
-      setTimeout(() => setBulkCopied(null), 1500)
-    })
   }
 
   const atLeastOneChecked =
@@ -338,7 +329,7 @@ export default function PasswordGeneratorClient() {
                   {pw}
                 </span>
                 <button
-                  onClick={() => handleBulkCopy(idx, pw)}
+                  onClick={() => bulkCopy(idx, pw)}
                   style={{
                     flexShrink: 0,
                     fontFamily: 'var(--font-jetbrains), monospace',
@@ -346,14 +337,14 @@ export default function PasswordGeneratorClient() {
                     padding: '4px 10px',
                     borderRadius: '3px',
                     border: '1px solid var(--border-light)',
-                    backgroundColor: bulkCopied === idx ? 'var(--teal-mid)' : 'var(--surface)',
-                    color: bulkCopied === idx ? 'var(--teal)' : 'var(--ink-mid)',
+                    backgroundColor: copiedIdx === idx ? 'var(--teal-mid)' : 'var(--surface)',
+                    color: copiedIdx === idx ? 'var(--teal)' : 'var(--ink-mid)',
                     cursor: 'pointer',
                     transition: 'background-color 0.15s, color 0.15s',
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  {bulkCopied === idx ? '✓' : 'コピー'}
+                  {copiedIdx === idx ? '✓' : 'コピー'}
                 </button>
               </div>
             ))}

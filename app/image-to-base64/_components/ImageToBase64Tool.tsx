@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { formatDataUri, estimateSizeKb, extractBase64FromDataUri } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 type OutputMode = 'dataUri' | 'base64Only'
 
@@ -15,7 +16,7 @@ interface ImageInfo {
 export default function ImageToBase64Tool() {
   const [imageInfo, setImageInfo] = useState<ImageInfo | null>(null)
   const [outputMode, setOutputMode] = useState<OutputMode>('dataUri')
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
   const [isDragging, setIsDragging] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -35,7 +36,6 @@ export default function ImageToBase64Tool() {
         mimeType: file.type || 'application/octet-stream',
         dataUri,
       })
-      setCopied(false)
     }
     reader.onerror = () => {
       setError('ファイルの読み込み中にエラーが発生しました。')
@@ -72,15 +72,11 @@ export default function ImageToBase64Tool() {
 
   const handleCopy = () => {
     if (!outputValue) return
-    navigator.clipboard.writeText(outputValue).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    })
+    copy(outputValue)
   }
 
   const handleClear = () => {
     setImageInfo(null)
-    setCopied(false)
     setError(null)
     if (inputRef.current) inputRef.current.value = ''
   }
@@ -234,7 +230,7 @@ export default function ImageToBase64Tool() {
               return (
                 <button
                   key={key}
-                  onClick={() => { setOutputMode(key); setCopied(false) }}
+                  onClick={() => { setOutputMode(key) }}
                   style={{
                     fontFamily: 'var(--font-jetbrains), monospace',
                     fontSize: '12px',

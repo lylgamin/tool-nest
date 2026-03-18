@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import { escapeHtml, unescapeHtml } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 type Tab = 'escape' | 'unescape'
 
 export default function HtmlEscapeToolClient() {
   const [tab, setTab] = useState<Tab>('escape')
   const [input, setInput] = useState('')
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const output: string = (() => {
     if (!input) return ''
@@ -17,21 +18,16 @@ export default function HtmlEscapeToolClient() {
 
   const handleCopy = () => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    })
+    copy(output)
   }
 
   const handleClear = () => {
     setInput('')
-    setCopied(false)
   }
 
   const handleTabChange = (next: Tab) => {
     setTab(next)
     setInput('')
-    setCopied(false)
   }
 
   return (

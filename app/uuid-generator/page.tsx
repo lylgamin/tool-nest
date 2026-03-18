@@ -24,6 +24,37 @@ const jsonLdString = JSON.stringify({
   inLanguage: 'ja',
 })
 
+const faqLdString = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'UUIDとは何ですか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'UUID（Universally Unique Identifier）は、128ビットの識別子で、RFC 4122で標準化されています。分散システムでのID生成に広く使われます。',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'UUID v4の衝突確率はどのくらいですか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'UUID v4は122ビットのランダム値で生成されます。10億個生成しても衝突確率は約10の-18乗と極めて低く、実用上は無視できます。',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'このツールで生成したUUIDを安全に使えますか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'はい。ブラウザ標準のcrypto.randomUUID()を使用しており、暗号論的に安全な乱数で生成されます。入力データはサーバーに送信されません。',
+      },
+    },
+  ],
+})
+
 const coreCode = `// crypto.randomUUID() はすべてのモダンブラウザで利用可能
 export function generateUuidV4(): string {
   return crypto.randomUUID()
@@ -39,6 +70,7 @@ export default function UuidGeneratorPage() {
     <main style={{ maxWidth: '860px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
       {/* JSON-LD: static structured data, no user input */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqLdString }} />
 
       {/* ページヘッダー */}
       <div style={{ marginBottom: '2rem' }}>

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { convertCurl, type OutputFormat } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 const SAMPLES = [
   { label: 'GET', cmd: 'curl https://api.example.com/users' },
@@ -14,7 +15,7 @@ export default function CurlToFetchTool() {
   const [format, setFormat] = useState<OutputFormat>('fetch')
   const [output, setOutput] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const handleConvert = useCallback(() => {
     const r = convertCurl(input, format)
@@ -23,16 +24,13 @@ export default function CurlToFetchTool() {
   }, [input, format])
 
   const handleClear = useCallback(() => {
-    setInput(''); setOutput(''); setError(null); setCopied(false)
+    setInput(''); setOutput(''); setError(null)
   }, [])
 
   const handleCopy = useCallback(() => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [output])
+    copy(output)
+  }, [output, copy])
 
   return (
     <div>

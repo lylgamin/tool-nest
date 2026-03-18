@@ -2,13 +2,14 @@
 
 import { useState, useCallback } from 'react'
 import { generateJsonSchemaFromString } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 export default function JsonSchemaTool() {
   const [input, setInput] = useState('')
   const [title, setTitle] = useState('')
   const [output, setOutput] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const handleGenerate = useCallback(() => {
     const result = generateJsonSchemaFromString(input, title.trim() || undefined)
@@ -26,16 +27,12 @@ export default function JsonSchemaTool() {
     setTitle('')
     setOutput('')
     setError(null)
-    setCopied(false)
   }, [])
 
   const handleCopy = useCallback(() => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [output])
+    copy(output)
+  }, [output, copy])
 
   return (
     <div>

@@ -2,26 +2,23 @@
 
 import { useState } from 'react';
 import { toKebabCase, toSnakeCase } from '../utils';
+import { useCopy } from '../../_components/useCopy';
 
 type Tab = 'kebab' | 'snake';
 
 export default function KebabCaseClient() {
   const [tab, setTab] = useState<Tab>('kebab');
   const [input, setInput] = useState('');
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopy();
 
   const output = tab === 'kebab' ? toKebabCase(input) : toSnakeCase(input);
 
   function handleCopy() {
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    });
+    copy(output);
   }
 
   function handleClear() {
     setInput('');
-    setCopied(false);
   }
 
   const tabStyle = (active: boolean): React.CSSProperties => ({
