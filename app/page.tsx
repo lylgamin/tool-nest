@@ -166,8 +166,8 @@ export default function HomePage() {
         {/* 統計 */}
         <div style={{ display: "flex", justifyContent: "center", gap: "3rem" }}>
           {[
-            { value: "50+", label: "ツール（予定）" },
-            { value: "7", label: "カテゴリ" },
+            { value: String(readyTools.length), label: "ツール" },
+            { value: String(CATEGORIES.length), label: "カテゴリ" },
             { value: "0", label: "サーバー通信" },
           ].map(({ value, label }) => (
             <div key={label} style={{ textAlign: "center" }}>
