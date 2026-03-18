@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useMemo } from 'react'
 import { buildOgpTags, validateOgp, type OgpFields } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 const DEFAULT_FIELDS: OgpFields = {
   title: '',
@@ -17,7 +18,7 @@ const DEFAULT_FIELDS: OgpFields = {
 
 export default function OgpPreviewTool() {
   const [fields, setFields] = useState<OgpFields>(DEFAULT_FIELDS)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const update = useCallback((key: keyof OgpFields, value: string) => {
     setFields(prev => ({ ...prev, [key]: value }))
@@ -27,11 +28,8 @@ export default function OgpPreviewTool() {
   const tags = useMemo(() => buildOgpTags(fields), [fields])
 
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(tags).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [tags])
+    copy(tags)
+  }, [tags, copy])
 
   const imageStyle: React.CSSProperties = {
     width: '100%', aspectRatio: '1200/630', backgroundColor: '#e0d8cc',

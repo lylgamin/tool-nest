@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { generateTypes } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 type Style = 'interface' | 'type'
 
@@ -11,7 +12,7 @@ export default function JsonToTsTool() {
   const [rootName, setRootName] = useState('Root')
   const [style, setStyle] = useState<Style>('interface')
   const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const handleGenerate = useCallback(() => {
     const name = rootName.trim() || 'Root'
@@ -21,16 +22,13 @@ export default function JsonToTsTool() {
   }, [input, rootName, style])
 
   const handleClear = useCallback(() => {
-    setInput(''); setOutput(''); setError(null); setCopied(false)
+    setInput(''); setOutput(''); setError(null)
   }, [])
 
   const handleCopy = useCallback(() => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [output])
+    copy(output)
+  }, [output, copy])
 
   return (
     <div>

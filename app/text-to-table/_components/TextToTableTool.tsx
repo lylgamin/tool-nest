@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { csvToMarkdownTable } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 type Delimiter = ',' | '\t'
 
@@ -10,7 +11,7 @@ export default function TextToTableTool() {
   const [delimiter, setDelimiter] = useState<Delimiter>(',')
   const [output, setOutput] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const handleConvert = useCallback(() => {
     const result = csvToMarkdownTable(input, delimiter)
@@ -27,16 +28,12 @@ export default function TextToTableTool() {
     setInput('')
     setOutput(null)
     setError(null)
-    setCopied(false)
   }, [])
 
   const handleCopy = useCallback(() => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [output])
+    copy(output)
+  }, [output, copy])
 
   return (
     <div>

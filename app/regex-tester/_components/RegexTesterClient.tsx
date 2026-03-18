@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { testRegex, type RegexTestResult } from '../utils'
+import { useQueryState } from '../../_components/useQueryState'
 
 type FlagKey = 'g' | 'i' | 'm'
 
@@ -12,28 +13,26 @@ const FLAG_LABELS: { key: FlagKey; label: string; description: string }[] = [
 ]
 
 export default function RegexTesterClient() {
-  const [pattern, setPattern] = useState('')
-  const [flags, setFlags] = useState<Set<FlagKey>>(new Set(['g']))
+  const [pattern, setPattern] = useQueryState('p', '')
+  const [flagString, setFlagString] = useQueryState('f', 'g')
   const [input, setInput] = useState('')
 
-  const flagString = [...flags].join('')
+  const flags = new Set(flagString.split('').filter(Boolean) as FlagKey[])
   const result: RegexTestResult = useMemo(
     () => testRegex(pattern, flagString, input),
     [pattern, flagString, input]
   )
 
   const toggleFlag = (key: FlagKey) => {
-    setFlags(prev => {
-      const next = new Set(prev)
-      if (next.has(key)) next.delete(key)
-      else next.add(key)
-      return next
-    })
+    const next = new Set(flags)
+    if (next.has(key)) next.delete(key)
+    else next.add(key)
+    setFlagString([...next].join(''))
   }
 
   const handleClear = () => {
     setPattern('')
-    setFlags(new Set(['g']))
+    setFlagString('g')
     setInput('')
   }
 

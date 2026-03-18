@@ -2,10 +2,11 @@
 
 import { useState, useCallback } from 'react'
 import { diffLines, type DiffLine } from '../utils'
+import { useLocalInput } from '../../_components/useLocalInput'
 
 export default function TextDiffTool() {
-  const [oldText, setOldText] = useState('')
-  const [newText, setNewText] = useState('')
+  const [oldText, setOldText, clearOld] = useLocalInput('text-diff-a')
+  const [newText, setNewText, clearNew] = useLocalInput('text-diff-b')
   const [diffResult, setDiffResult] = useState<DiffLine[] | null>(null)
 
   const handleDiff = useCallback(() => {
@@ -14,10 +15,10 @@ export default function TextDiffTool() {
   }, [oldText, newText])
 
   const handleClear = useCallback(() => {
-    setOldText('')
-    setNewText('')
+    clearOld()
+    clearNew()
     setDiffResult(null)
-  }, [])
+  }, [clearOld, clearNew])
 
   const addedCount = diffResult?.filter(l => l.kind === 'added').length ?? 0
   const removedCount = diffResult?.filter(l => l.kind === 'removed').length ?? 0

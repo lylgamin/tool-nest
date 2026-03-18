@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import RegexTesterClient from './_components/RegexTesterClient'
 import AdUnit from '../_components/AdUnit'
 
@@ -91,7 +92,9 @@ export default function RegexTesterPage() {
         padding: '1.5rem',
         marginBottom: '3rem',
       }}>
-        <RegexTesterClient />
+        <Suspense>
+          <RegexTesterClient />
+        </Suspense>
       </section>
 
       {/* 使い方 */}

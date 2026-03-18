@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
 import { CATEGORIES, TOOLS } from "./_data/tools";
+import { useRecentTools } from "./_components/useRecentTools";
 
 // ピン止め状態をlocalStorageで管理するフック
 function usePins() {
@@ -36,9 +37,13 @@ function openCommandPalette() {
 
 export default function HomePage() {
   const { pins, toggle } = usePins();
+  const recentIds = useRecentTools();
 
   const pinnedTools = TOOLS.filter((t) => t.ready && pins.has(t.id));
   const readyTools = TOOLS.filter((t) => t.ready);
+  const recentTools = recentIds
+    .map((id) => TOOLS.find((t) => t.id === id && t.ready && !pins.has(id)))
+    .filter((t): t is NonNullable<typeof t> => t !== undefined);
 
   return (
     <main>
@@ -332,6 +337,67 @@ export default function HomePage() {
                 key={tool.id}
                 {...tool}
                 isPinned
+                onTogglePin={() => toggle(tool.id)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 最近使ったツール（1件以上・ピン未重複の場合のみ表示） */}
+      {recentTools.length > 0 && (
+        <section
+          style={{
+            maxWidth: "1100px",
+            margin: "0 auto",
+            padding: "0 1.5rem 3rem",
+          }}
+        >
+          <div
+            style={{
+              marginBottom: "1.5rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: "var(--font-noto-serif), serif",
+                fontSize: "16px",
+                fontWeight: 600,
+                color: "var(--ink)",
+                margin: 0,
+              }}
+            >
+              最近使ったツール
+            </h2>
+            <span
+              style={{
+                fontFamily: "var(--font-jetbrains), monospace",
+                fontSize: "10px",
+                color: "var(--teal)",
+                letterSpacing: "0.1em",
+                border: "1px solid var(--teal)",
+                borderRadius: "2px",
+                padding: "1px 6px",
+              }}
+            >
+              {recentTools.length}
+            </span>
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "1rem",
+            }}
+          >
+            {recentTools.map((tool) => (
+              <ToolCard
+                key={tool.id}
+                {...tool}
+                isPinned={pins.has(tool.id)}
                 onTogglePin={() => toggle(tool.id)}
               />
             ))}

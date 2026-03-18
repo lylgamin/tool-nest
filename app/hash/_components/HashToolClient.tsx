@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { computeHash, formatHash } from '../utils'
 import type { HashAlgorithm } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 const ALGORITHMS: HashAlgorithm[] = ['SHA-1', 'SHA-256', 'SHA-384', 'SHA-512']
 
@@ -17,7 +18,7 @@ export default function HashToolClient() {
   const [input, setInput] = useState('')
   const [algorithm, setAlgorithm] = useState<HashAlgorithm>('SHA-256')
   const [output, setOutput] = useState('')
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   useEffect(() => {
     const promise = input ? computeHash(input, algorithm) : Promise.resolve('')
@@ -26,16 +27,12 @@ export default function HashToolClient() {
 
   const handleCopy = () => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    })
+    copy(output)
   }
 
   const handleClear = () => {
     setInput('')
     setOutput('')
-    setCopied(false)
   }
 
   const meta = ALGO_META[algorithm]
@@ -164,7 +161,7 @@ export default function HashToolClient() {
                 fontFamily: 'var(--font-jetbrains), monospace',
                 fontSize: '11px',
                 letterSpacing: '0.08em',
-                color: copied ? '#2ec880' : 'var(--ink-light)',
+                color: copied ? 'var(--teal)' : 'var(--ink-light)',
                 background: 'none',
                 border: '1px solid var(--border-light)',
                 borderRadius: '3px',

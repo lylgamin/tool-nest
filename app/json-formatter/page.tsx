@@ -24,6 +24,37 @@ const jsonLdString = JSON.stringify({
   inLanguage: 'ja',
 })
 
+const faqLdString = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'JSONフォーマッターとは何ですか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'JSONフォーマッターは、圧縮されたJSONデータを読みやすい形式に整形するツールです。インデント・改行を追加し、ネスト構造を視覚的に確認できます。構文エラーも検出します。',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'JSONを整形するとデータは変わりますか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'いいえ。フォーマット処理は空白文字・改行・インデントを追加するだけで、データの値や構造は一切変わりません。入力したJSONと完全に等価なデータです。',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'このツールに入力したデータはサーバーに送られますか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'いいえ。すべての処理はブラウザ内のJavaScriptで完結しており、入力したJSONデータはサーバーに送信されません。機密情報を含むJSONも安心して使用できます。',
+      },
+    },
+  ],
+})
+
 const coreCode = `export type FormatResult =
   | { ok: true; output: string }
   | { ok: false; error: string }
@@ -56,6 +87,7 @@ export default function JsonFormatterPage() {
     <main style={{ maxWidth: '960px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
       {/* JSON-LD: static structured data, no user input */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqLdString }} />
 
       {/* ページヘッダー */}
       <div style={{ marginBottom: '2rem' }}>

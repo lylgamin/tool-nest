@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { convertBase } from '../utils'
 import type { Base } from '../utils'
+import { useStringCopy } from '../../_components/useCopy'
 
 const BASES: { value: Base; label: string }[] = [
   { value: 2,  label: '2進数 (BIN)' },
@@ -21,20 +22,16 @@ const RESULT_ROWS: { key: 'bin' | 'oct' | 'dec' | 'hex'; label: string; prefix: 
 export default function NumberBaseClient() {
   const [input, setInput]       = useState('')
   const [fromBase, setFromBase] = useState<Base>(10)
-  const [copied, setCopied]     = useState<string | null>(null)
+  const { copiedKey: copied, copy } = useStringCopy()
 
   const result = convertBase(input, fromBase)
 
   const handleCopy = (key: string, value: string) => {
-    navigator.clipboard.writeText(value).then(() => {
-      setCopied(key)
-      setTimeout(() => setCopied(null), 1500)
-    })
+    copy(key, value)
   }
 
   const handleClear = () => {
     setInput('')
-    setCopied(null)
   }
 
   return (
@@ -52,7 +49,7 @@ export default function NumberBaseClient() {
           return (
             <button
               key={value}
-              onClick={() => { setFromBase(value); setInput(''); setCopied(null) }}
+              onClick={() => { setFromBase(value); setInput('') }}
               style={{
                 fontFamily: 'var(--font-jetbrains), monospace',
                 fontSize: '12px',
@@ -90,7 +87,7 @@ export default function NumberBaseClient() {
           <input
             type="text"
             value={input}
-            onChange={e => { setInput(e.target.value); setCopied(null) }}
+            onChange={e => { setInput(e.target.value) }}
             placeholder={fromBase === 16 ? '例: 1A2F' : fromBase === 2 ? '例: 11010110' : fromBase === 8 ? '例: 777' : '例: 255'}
             style={{
               flex: 1,

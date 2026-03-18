@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { htmlToJsx, jsxToHtml } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 type Direction = 'html-to-jsx' | 'jsx-to-html'
 
@@ -10,7 +11,7 @@ export default function HtmlToJsxTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const handleConvert = useCallback(() => {
     const result = direction === 'html-to-jsx' ? htmlToJsx(input) : jsxToHtml(input)
@@ -27,16 +28,12 @@ export default function HtmlToJsxTool() {
     setInput('')
     setOutput('')
     setError(null)
-    setCopied(false)
   }, [])
 
   const handleCopy = useCallback(() => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [output])
+    copy(output)
+  }, [output, copy])
 
   return (
     <div>

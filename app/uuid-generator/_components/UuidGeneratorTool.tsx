@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { generateUuids } from '../utils'
+import { useCopy, useIndexedCopy } from '../../_components/useCopy'
 
 const DEFAULT_COUNT = 5
 
@@ -12,26 +13,20 @@ export default function UuidGeneratorTool() {
     typeof window === 'undefined' ? [] : generateUuids(DEFAULT_COUNT)
   )
   const [uppercase, setUppercase] = useState(false)
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
-  const [copiedAll, setCopiedAll] = useState(false)
+  const { copiedIdx: copiedIndex, copy: copyOne_ } = useIndexedCopy()
+  const { copied: copiedAll, copy: copyAll_ } = useCopy()
 
   const generate = () => setUuids(generateUuids(count))
 
   const displayUuid = (uuid: string) => uppercase ? uuid.toUpperCase() : uuid.toLowerCase()
 
   const copyOne = (uuid: string, index: number) => {
-    navigator.clipboard.writeText(displayUuid(uuid)).then(() => {
-      setCopiedIndex(index)
-      setTimeout(() => setCopiedIndex(null), 1500)
-    })
+    copyOne_(index, displayUuid(uuid))
   }
 
   const copyAll = () => {
     const text = uuids.map(displayUuid).join('\n')
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedAll(true)
-      setTimeout(() => setCopiedAll(false), 1500)
-    })
+    copyAll_(text)
   }
 
   return (

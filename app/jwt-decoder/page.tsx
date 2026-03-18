@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import JwtDecoderClient from './_components/JwtDecoderClient'
 import AdUnit from '../_components/AdUnit'
 
@@ -24,6 +25,37 @@ const jsonLdString = JSON.stringify({
   inLanguage: 'ja',
 })
 
+const faqLdString = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'JWTとは何ですか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'JWT（JSON Web Token）は、JSONオブジェクトを安全に表現するためのコンパクトなトークン形式です。ヘッダー・ペイロード・署名の3部分をBase64URLエンコードしドットで連結した形式です。',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'このツールで署名の検証はできますか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'いいえ。このツールはJWTのヘッダーとペイロードをデコードして表示するだけです。署名の検証にはサーバーサイドで秘密鍵または公開鍵を使った処理が必要です。',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'JWTに機密情報を含めても安全ですか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'いいえ。JWTのペイロードはBase64URLエンコードされているだけで暗号化されていません。誰でも簡単にデコードできます。パスワードや個人情報など機密性の高いデータをJWTに含めないでください。',
+      },
+    },
+  ],
+})
+
 const coreCode = `// Base64URLデコード（JWT用）
 function base64UrlDecode(str) {
   const padded = str + '=='.slice(0, (4 - str.length % 4) % 4);
@@ -45,6 +77,7 @@ export default function JwtDecoderPage() {
     <main style={{ maxWidth: '860px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
       {/* JSON-LD: static structured data, no user input */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqLdString }} />
 
       {/* ページヘッダー */}
       <div style={{ marginBottom: '2rem' }}>
@@ -87,7 +120,9 @@ export default function JwtDecoderPage() {
         padding: '1.5rem',
         marginBottom: '3rem',
       }}>
-        <JwtDecoderClient />
+        <Suspense>
+          <JwtDecoderClient />
+        </Suspense>
       </section>
 
       {/* 使い方 */}

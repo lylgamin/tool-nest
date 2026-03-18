@@ -2,12 +2,13 @@
 
 import { useState, useCallback, useMemo } from 'react'
 import { COMMIT_TYPES, buildCommitMessage, validateSubject, type CommitFields } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 export default function GitCommitBuilderTool() {
   const [fields, setFields] = useState<CommitFields>({
     type: 'feat', scope: '', breaking: false, subject: '', body: '', footer: '',
   })
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const update = useCallback((key: keyof CommitFields, value: string | boolean) => {
     setFields(prev => ({ ...prev, [key]: value }))
@@ -18,11 +19,8 @@ export default function GitCommitBuilderTool() {
 
   const handleCopy = useCallback(() => {
     if (!message) return
-    navigator.clipboard.writeText(message).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [message])
+    copy(message)
+  }, [message, copy])
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>

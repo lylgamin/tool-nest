@@ -5,6 +5,7 @@ import {
   parseHex, rgbToHex, hslToRgb, hsvToRgb, fromRgb,
   type RgbColor, type HslColor, type HsvColor, type ColorResult,
 } from '../utils'
+import { useStringCopy } from '../../_components/useCopy'
 
 const INITIAL: ColorResult = fromRgb({ r: 99, g: 102, b: 241 }) // indigo-500
 
@@ -89,16 +90,13 @@ function CopyBtn({ text, id, copied, onCopy }: {
 
 export default function ColorConverterClient() {
   const [color, setColor] = useState<ColorResult>(INITIAL)
-  const [copied, setCopied] = useState<string | null>(null)
+  const { copiedKey: copied, copy } = useStringCopy()
   const [hexDraft, setHexDraft] = useState<string | null>(null)
 
   const apply = (rgb: RgbColor) => setColor(fromRgb(rgb))
 
   const handleCopy = (id: string, text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(id)
-      setTimeout(() => setCopied(null), 1500)
-    })
+    copy(id, text)
   }
 
   const { hex, rgb, hsl, hsv } = color

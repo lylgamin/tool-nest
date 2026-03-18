@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { escapeString, unescapeString, type Lang } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 type Mode = 'escape' | 'unescape'
 
@@ -20,7 +21,7 @@ export default function StringEscapeTool() {
   const [lang, setLang] = useState<Lang>('js')
   const [mode, setMode] = useState<Mode>('escape')
   const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const handleConvert = useCallback(() => {
     setError(null)
@@ -41,16 +42,12 @@ export default function StringEscapeTool() {
     setInput('')
     setOutput('')
     setError(null)
-    setCopied(false)
   }, [])
 
   const handleCopy = useCallback(() => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [output])
+    copy(output)
+  }, [output, copy])
 
   return (
     <div>

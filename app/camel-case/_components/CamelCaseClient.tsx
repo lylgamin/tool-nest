@@ -2,26 +2,23 @@
 
 import { useState } from 'react';
 import { toCamelCase, toPascalCase } from '../utils';
+import { useCopy } from '../../_components/useCopy';
 
 type Tab = 'camel' | 'pascal';
 
 export default function CamelCaseClient() {
   const [tab, setTab] = useState<Tab>('camel');
   const [input, setInput] = useState('');
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopy();
 
   const output = tab === 'camel' ? toCamelCase(input) : toPascalCase(input);
 
   function handleCopy() {
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    });
+    copy(output);
   }
 
   function handleClear() {
     setInput('');
-    setCopied(false);
   }
 
   const tabStyle = (active: boolean): React.CSSProperties => ({

@@ -8,6 +8,7 @@ import {
 import Nav from "./_components/Nav";
 import Footer from "./_components/Footer";
 import CommandPalette from "./_components/CommandPalette";
+import PrivacyBanner from "./_components/PrivacyBanner";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -68,6 +69,7 @@ export default function RootLayout({
         className={fontVars}
         style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
+        <PrivacyBanner />
         <Nav />
         <div style={{ flex: 1 }}>{children}</div>
         <Footer />

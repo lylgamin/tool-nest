@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { CSP_DIRECTIVES, buildCspHeader, parseCspHeader } from '../utils'
+import { useCopy } from '../../_components/useCopy'
 
 type DirectiveState = {
   enabled: boolean
@@ -24,7 +25,7 @@ function initState(): Record<string, DirectiveState> {
 export default function CspGeneratorTool() {
   const [directives, setDirectives] = useState<Record<string, DirectiveState>>(initState)
   const [importText, setImportText] = useState('')
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const getConfig = useCallback((): Record<string, string[]> => {
     const config: Record<string, string[]> = {}
@@ -93,11 +94,8 @@ export default function CspGeneratorTool() {
 
   const handleCopy = useCallback(() => {
     if (!cspOutput) return
-    navigator.clipboard.writeText(cspOutput).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1800)
-    })
-  }, [cspOutput])
+    copy(cspOutput)
+  }, [cspOutput, copy])
 
   return (
     <div>

@@ -24,6 +24,37 @@ const jsonLdString = JSON.stringify({
   inLanguage: 'ja',
 })
 
+const faqLdString = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'ハッシュとは何ですか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'ハッシュ（SHA-256など）は、任意の長さのデータから固定長のダイジェスト値を生成する一方向関数です。元データの改ざん検証やパスワード保存に使われます。',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'SHA-1とSHA-256の違いは何ですか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'SHA-1は160ビット、SHA-256は256ビットのダイジェストを生成します。SHA-1は衝突攻撃への耐性が弱く非推奨です。新しいシステムではSHA-256以上を使用してください。',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'ハッシュ値からデータを復元できますか？',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'できません。ハッシュは一方向関数のため、ハッシュ値から元のデータを逆算することは計算上不可能です（これを一方向性といいます）。',
+      },
+    },
+  ],
+})
+
 const coreCode = `export type HashAlgorithm = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512'
 
 // Web Crypto API を使ったハッシュ計算（非同期）
@@ -48,6 +79,7 @@ export default function HashPage() {
     <main style={{ maxWidth: '860px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
       {/* JSON-LD: static structured data, no user input */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqLdString }} />
 
       {/* ページヘッダー */}
       <div style={{ marginBottom: '2rem' }}>

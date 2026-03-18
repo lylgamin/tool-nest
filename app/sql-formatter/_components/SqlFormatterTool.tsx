@@ -2,12 +2,14 @@
 
 import { useState, useCallback } from 'react'
 import { formatSql, minifySql } from '../utils'
+import { useCopy } from '../../_components/useCopy'
+import { useLocalInput } from '../../_components/useLocalInput'
 
 export default function SqlFormatterTool() {
-  const [input, setInput] = useState('')
+  const [input, setInput, clearInput] = useLocalInput('sql-formatter')
   const [output, setOutput] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopy()
 
   const handleFormat = useCallback(() => {
     const r = formatSql(input)
@@ -22,16 +24,13 @@ export default function SqlFormatterTool() {
   }, [input])
 
   const handleClear = useCallback(() => {
-    setInput(''); setOutput(''); setError(null); setCopied(false)
-  }, [])
+    clearInput(); setOutput(''); setError(null)
+  }, [clearInput])
 
   const handleCopy = useCallback(() => {
     if (!output) return
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [output])
+    copy(output)
+  }, [output, copy])
 
   return (
     <div>
