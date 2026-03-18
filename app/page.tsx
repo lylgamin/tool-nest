@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { CATEGORIES, TOOLS } from "./_data/tools";
 
 // ピン止め状態をlocalStorageで管理するフック
@@ -30,32 +30,15 @@ function usePins() {
   return { pins, toggle };
 }
 
+function openCommandPalette() {
+  window.dispatchEvent(new CustomEvent("open-command-palette"));
+}
+
 export default function HomePage() {
-  const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const { pins, toggle } = usePins();
 
-  const pinnedTools = useMemo(
-    () => TOOLS.filter((t) => t.ready && pins.has(t.id)),
-    [pins]
-  );
-
-  const filtered = useMemo(() => {
-    const q = query.toLowerCase();
-    return TOOLS.filter((tool) => {
-      const matchesQuery =
-        q === "" ||
-        tool.title.toLowerCase().includes(q) ||
-        tool.description.toLowerCase().includes(q);
-      const matchesCategory =
-        activeCategory === null || tool.category === activeCategory;
-      return matchesQuery && matchesCategory;
-    });
-  }, [query, activeCategory]);
-
-  const handleCategoryClick = (id: string) => {
-    setActiveCategory((prev) => (prev === id ? null : id));
-  };
+  const pinnedTools = TOOLS.filter((t) => t.ready && pins.has(t.id));
+  const readyTools = TOOLS.filter((t) => t.ready);
 
   return (
     <main>
@@ -112,19 +95,16 @@ export default function HomePage() {
           JSONフォーマッターや文字数カウンターなど、よく使う開発ツールをブラウザだけで手軽に使えます。入力した内容はサーバーに送信されません。
         </p>
 
-        {/* 検索ボックス */}
+        {/* 検索トリガー（コマンドパレットを開く） */}
         <div
           style={{
             maxWidth: "400px",
             margin: "0 auto 3rem",
-            position: "relative",
           }}
         >
-          <input
-            type="search"
-            placeholder="ツールを検索... (例: JSON, Base64)"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+          <button
+            onClick={openCommandPalette}
+            aria-label="ツールを検索（コマンドパレットを開く）"
             style={{
               width: "100%",
               padding: "10px 16px",
@@ -134,25 +114,48 @@ export default function HomePage() {
               borderRadius: "4px",
               fontFamily: "var(--font-noto-sans), sans-serif",
               fontSize: "13px",
-              color: "var(--ink)",
-              outline: "none",
-              boxSizing: "border-box",
-            }}
-          />
-          <span
-            style={{
-              position: "absolute",
-              left: "14px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              fontFamily: "var(--font-jetbrains), monospace",
-              fontSize: "13px",
               color: "var(--ink-faint)",
-              pointerEvents: "none",
+              cursor: "pointer",
+              textAlign: "left",
+              boxSizing: "border-box",
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              transition: "border-color 0.15s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--teal)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border)";
             }}
           >
-            /
-          </span>
+            <span
+              style={{
+                position: "absolute",
+                left: "14px",
+                fontFamily: "var(--font-jetbrains), monospace",
+                fontSize: "13px",
+                color: "var(--ink-faint)",
+              }}
+            >
+              /
+            </span>
+            <span style={{ flex: 1 }}>ツールを検索... (例: JSON, Base64)</span>
+            <kbd
+              style={{
+                fontFamily: "var(--font-jetbrains), monospace",
+                fontSize: "10px",
+                color: "var(--ink-faint)",
+                border: "1px solid var(--border)",
+                borderRadius: "3px",
+                padding: "2px 6px",
+                flexShrink: 0,
+              }}
+            >
+              ⌘K
+            </kbd>
+          </button>
         </div>
 
         {/* 統計 */}
@@ -217,57 +220,61 @@ export default function HomePage() {
             gap: "0.75rem",
           }}
         >
-          {CATEGORIES.map((cat) => {
-            const isActive = activeCategory === cat.id;
-            return (
+          {CATEGORIES.map((cat) => (
+            <Link
+              key={cat.id}
+              href={`/category/${cat.id}`}
+              style={{
+                backgroundColor: "var(--surface)",
+                border: "1px solid var(--border-light)",
+                borderRadius: "4px",
+                padding: "1rem",
+                textAlign: "center",
+                textDecoration: "none",
+                display: "block",
+                transition: "border-color 0.15s, background-color 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.borderColor = "var(--teal)";
+                (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "var(--teal-mid)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.borderColor = "var(--border-light)";
+                (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "var(--surface)";
+              }}
+            >
               <div
-                key={cat.id}
-                onClick={() => handleCategoryClick(cat.id)}
                 style={{
-                  backgroundColor: isActive ? "var(--teal-mid)" : "var(--surface)",
-                  border: isActive
-                    ? "2px solid var(--teal)"
-                    : "1px solid var(--border-light)",
-                  borderRadius: "4px",
-                  padding: isActive ? "calc(1rem - 1px)" : "1rem",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  transition: "border 0.15s, background-color 0.15s",
+                  fontFamily: "var(--font-jetbrains), monospace",
+                  fontSize: "16px",
+                  color: "var(--navy)",
+                  marginBottom: "6px",
                 }}
               >
-                <div
-                  style={{
-                    fontFamily: "var(--font-jetbrains), monospace",
-                    fontSize: "16px",
-                    color: "var(--navy)",
-                    marginBottom: "6px",
-                  }}
-                >
-                  {cat.icon}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-noto-sans), sans-serif",
-                    fontSize: "13px",
-                    color: "var(--ink-mid)",
-                  }}
-                >
-                  {cat.label}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-jetbrains), monospace",
-                    fontSize: "9px",
-                    color: "var(--ink-faint)",
-                    letterSpacing: "0.1em",
-                    marginTop: "3px",
-                  }}
-                >
-                  {cat.count} tools
-                </div>
+                {cat.icon}
               </div>
-            );
-          })}
+              <div
+                style={{
+                  fontFamily: "var(--font-noto-sans), sans-serif",
+                  fontSize: "13px",
+                  color: "var(--ink-mid)",
+                }}
+              >
+                {cat.label}
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-jetbrains), monospace",
+                  fontSize: "9px",
+                  color: "var(--ink-faint)",
+                  letterSpacing: "0.1em",
+                  marginTop: "3px",
+                }}
+              >
+                {cat.count} tools
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -340,14 +347,7 @@ export default function HomePage() {
           padding: "0 1.5rem 6rem",
         }}
       >
-        <div
-          style={{
-            marginBottom: "1.5rem",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.75rem",
-          }}
-        >
+        <div style={{ marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <h2
             style={{
               fontFamily: "var(--font-noto-serif), serif",
@@ -359,49 +359,37 @@ export default function HomePage() {
           >
             すべてのツール
           </h2>
-          {(query !== "" || activeCategory !== null) && (
-            <span
-              style={{
-                fontFamily: "var(--font-jetbrains), monospace",
-                fontSize: "11px",
-                color: "var(--ink-light)",
-              }}
-            >
-              {filtered.length} / {TOOLS.length}
-            </span>
-          )}
+          <span
+            style={{
+              fontFamily: "var(--font-jetbrains), monospace",
+              fontSize: "10px",
+              color: "var(--teal)",
+              letterSpacing: "0.1em",
+              border: "1px solid var(--teal)",
+              borderRadius: "2px",
+              padding: "1px 6px",
+            }}
+          >
+            {readyTools.length}
+          </span>
         </div>
 
-        {filtered.length === 0 ? (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "4rem 1rem",
-              fontFamily: "var(--font-noto-sans), sans-serif",
-              fontSize: "14px",
-              color: "var(--ink-light)",
-            }}
-          >
-            「{query}」に一致するツールが見つかりません
-          </div>
-        ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-              gap: "1rem",
-            }}
-          >
-            {filtered.map((tool) => (
-              <ToolCard
-                key={tool.id}
-                {...tool}
-                isPinned={pins.has(tool.id)}
-                onTogglePin={() => toggle(tool.id)}
-              />
-            ))}
-          </div>
-        )}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: "1rem",
+          }}
+        >
+          {TOOLS.map((tool) => (
+            <ToolCard
+              key={tool.id}
+              {...tool}
+              isPinned={pins.has(tool.id)}
+              onTogglePin={() => toggle(tool.id)}
+            />
+          ))}
+        </div>
       </section>
     </main>
   );
