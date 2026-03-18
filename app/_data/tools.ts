@@ -20,21 +20,21 @@ export const CATEGORIES: Category[] = [
     id: "text",
     label: "テキスト",
     icon: "Tt",
-    count: 3,
+    count: 5,
     description: "文字数カウント・正規表現・テキスト差分など文字列処理ツール",
   },
   {
     id: "encode",
     label: "エンコード",
     icon: "{}",
-    count: 7,
+    count: 9,
     description: "Base64・URLエンコード・HTMLエスケープなどエンコード変換ツール",
   },
   {
     id: "format",
     label: "フォーマット",
     icon: "<>",
-    count: 3,
+    count: 5,
     description: "JSON・SQL・JSONPathなどデータ整形ツール",
   },
   {
@@ -48,14 +48,14 @@ export const CATEGORIES: Category[] = [
     id: "generate",
     label: "生成",
     icon: "✦",
-    count: 6,
+    count: 7,
     description: "UUID・ハッシュ・パスワード・QRコードなど生成ツール",
   },
   {
     id: "calc",
     label: "計算",
     icon: "#",
-    count: 8,
+    count: 11,
     description: "営業日計算・Byte変換・パスワード強度など計算ツール",
   },
   {
@@ -435,6 +435,96 @@ export const TOOLS: Tool[] = [
       "HEX・RGB・HSL・HSVカラーコードを相互に変換。カラーピッカーで直感的に色を選択できます。",
     category: "convert",
     href: "/color-converter",
+    ready: true,
+  },
+  {
+    id: "text-to-table",
+    title: "テキスト → Markdown Table",
+    description:
+      "CSVやTSVをMarkdownのテーブル形式に変換。1行目をヘッダーとして自動認識し、セル内の | をエスケープします。",
+    category: "text",
+    href: "/text-to-table",
+    ready: true,
+  },
+  {
+    id: "text-lines",
+    title: "テキスト行操作",
+    description:
+      "テキストの行を重複削除・ソート・逆順・番号付け・空行削除・トリムで整形。ログやリストの整理に便利。",
+    category: "text",
+    href: "/text-lines",
+    ready: true,
+  },
+  {
+    id: "string-escape",
+    title: "文字列エスケープ変換",
+    description:
+      "JS・JSON・Python・SQLの文字列エスケープ／アンエスケープを変換。\\n・\\t・クォートなどの特殊文字を正確に処理。",
+    category: "encode",
+    href: "/string-escape",
+    ready: true,
+  },
+  {
+    id: "image-to-base64",
+    title: "画像 → Base64変換",
+    description:
+      "画像ファイルをBase64エンコードしてData URI形式に変換。PNG・JPEG・GIF・WebP・SVG対応。ドラッグ＆ドロップ可。",
+    category: "encode",
+    href: "/image-to-base64",
+    ready: true,
+  },
+  {
+    id: "json-schema",
+    title: "JSON スキーマ生成",
+    description:
+      "JSONオブジェクトからJSON Schema（draft-07）を自動生成。型・required・propertiesを再帰的に推論します。",
+    category: "format",
+    href: "/json-schema",
+    ready: true,
+  },
+  {
+    id: "json-diff",
+    title: "JSON Diff",
+    description:
+      "2つのJSONオブジェクトを比較してキーパス単位の差分を表示。追加・削除・変更・未変更を色分けします。",
+    category: "format",
+    href: "/json-diff",
+    ready: true,
+  },
+  {
+    id: "unit-converter",
+    title: "単位変換",
+    description:
+      "長さ・重量・温度・速度・面積の単位を相互変換。メートル法・ヤードポンド法・温度（℃・℉・K）に対応。",
+    category: "calc",
+    href: "/unit-converter",
+    ready: true,
+  },
+  {
+    id: "bitwise-calculator",
+    title: "ビット演算計算機",
+    description:
+      "AND・OR・XOR・NOT・LSHIFT・RSHIFTのビット演算を2進/8進/10進/16進で計算。32bit符号なし整数対応。",
+    category: "calc",
+    href: "/bitwise-calculator",
+    ready: true,
+  },
+  {
+    id: "semver",
+    title: "Semantic Version 比較",
+    description:
+      "semverのバージョン比較・バンプ（major/minor/patch）・レンジ（^/~/>=/<）の判定ができます。",
+    category: "calc",
+    href: "/semver",
+    ready: true,
+  },
+  {
+    id: "csp-generator",
+    title: "CSPジェネレーター",
+    description:
+      "Content Security Policyヘッダーを10ディレクティブのGUIで生成・編集。既存CSPのインポート・パース機能付き。",
+    category: "generate",
+    href: "/csp-generator",
     ready: true,
   },
 ]

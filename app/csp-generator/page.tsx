@@ -1,80 +1,49 @@
 import type { Metadata } from 'next'
-import TextDiffTool from './_components/TextDiffTool'
+import CspGeneratorTool from './_components/CspGeneratorTool'
 import AdUnit from '../_components/AdUnit'
 
 export const metadata: Metadata = {
-  title: 'テキスト差分ツール — 2つのテキストを行単位で比較',
-  description: '2つのテキストを行単位で比較し、追加・削除・変更箇所をハイライト表示するWebツール。LCSアルゴリズム使用。入力データはサーバーに送信されません。',
+  title: 'CSPヘッダー生成ツール — Content-Security-Policy を GUI で作成',
+  description: 'Content-Security-Policy ヘッダーをGUIで簡単に生成。各ディレクティブのON/OFF切り替え・プリセット値入力・既存CSPのインポートに対応。ブラウザのみで動作。',
   openGraph: {
-    title: 'テキスト差分ツール | tool-nest',
-    description: '2つのテキストを行単位で比較。追加・削除をブラウザ内で完結。LCSアルゴリズム実装。',
-    url: 'https://tool-nest.pages.dev/text-diff',
+    title: 'CSPヘッダー生成ツール | tool-nest',
+    description: 'Content-Security-Policy ヘッダーをGUIで生成。ディレクティブをトグルして値を設定するだけ。',
+    url: 'https://tool-nest.pages.dev/csp-generator',
   },
 }
 
 const jsonLdString = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'テキスト差分ツール',
+  name: 'CSPヘッダー生成ツール',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Any',
-  description: '2つのテキストを行単位で比較し、差分をハイライト表示するWebツール。ブラウザのみで動作し、データはサーバーに送信されません。',
-  url: 'https://tool-nest.pages.dev/text-diff',
+  description: 'Content-Security-Policy ヘッダーをGUIで生成するWebツール。ブラウザのみで動作し、データはサーバーに送信されません。',
+  url: 'https://tool-nest.pages.dev/csp-generator',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
   inLanguage: 'ja',
 })
 
-const coreLogicCode = `export type DiffKind = 'equal' | 'added' | 'removed'
-export interface DiffLine {
-  kind: DiffKind
-  lineOld: number | null  // 元テキストでの行番号（1始まり）
-  lineNew: number | null  // 新テキストでの行番号（1始まり）
-  content: string
+const coreLogicCode = `export function buildCspHeader(config: Record<string, string[]>): string {
+  return Object.entries(config)
+    .filter(([, values]) => values.length > 0)
+    .map(([directive, values]) => \`\${directive} \${values.join(' ')}\`)
+    .join('; ')
 }
 
-/** LCS（最長共通部分列）アルゴリズムを使った行単位の差分計算 */
-export function diffLines(oldText: string, newText: string): DiffLine[] {
-  if (oldText === '' && newText === '') return []
-
-  const oldLines = oldText === '' ? [] : oldText.split('\\n')
-  const newLines = newText === '' ? [] : newText.split('\\n')
-  const m = oldLines.length
-  const n = newLines.length
-
-  // DPテーブルを構築（O(m*n) 時間・空間計算量）
-  const dp: number[][] = Array.from({ length: m + 1 }, () =>
-    new Array(n + 1).fill(0)
-  )
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (oldLines[i - 1] === newLines[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
-      }
-    }
+export function parseCspHeader(header: string): Record<string, string[]> {
+  const result: Record<string, string[]> = {}
+  const directives = header.split(';').map(d => d.trim()).filter(Boolean)
+  for (const directive of directives) {
+    const parts = directive.split(/\\s+/)
+    const name = parts[0].toLowerCase()
+    const values = parts.slice(1)
+    result[name] = values
   }
-
-  // バックトラックで差分を生成
-  const result: DiffLine[] = []
-  let i = m
-  let j = n
-  while (i > 0 || j > 0) {
-    if (i > 0 && j > 0 && oldLines[i - 1] === newLines[j - 1]) {
-      result.push({ kind: 'equal', lineOld: i, lineNew: j, content: oldLines[i - 1] })
-      i--; j--
-    } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
-      result.push({ kind: 'added', lineOld: null, lineNew: j, content: newLines[j - 1] })
-      j--
-    } else {
-      result.push({ kind: 'removed', lineOld: i, lineNew: null, content: oldLines[i - 1] })
-      i--
-    }
-  }
-  return result.reverse()
+  return result
 }`
 
-export default function TextDiffPage() {
+export default function CspGeneratorPage() {
   return (
     <main style={{ maxWidth: '960px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
       {/* JSON-LD: static structured data, no user input */}
@@ -90,7 +59,7 @@ export default function TextDiffPage() {
           textTransform: 'uppercase',
           marginBottom: '0.5rem',
         }}>
-          text / compare
+          generate / security
         </div>
         <h1 style={{
           fontFamily: 'var(--font-cormorant), serif',
@@ -100,7 +69,7 @@ export default function TextDiffPage() {
           margin: 0,
           lineHeight: 1.1,
         }}>
-          テキスト差分ツール
+          CSPヘッダー生成ツール
         </h1>
         <p style={{
           fontFamily: 'var(--font-noto-sans), sans-serif',
@@ -109,8 +78,9 @@ export default function TextDiffPage() {
           marginTop: '0.75rem',
           lineHeight: 1.6,
         }}>
-          2つのテキストを行単位で比較し、追加・削除・変更箇所をハイライト表示します。
-          LCS（最長共通部分列）アルゴリズムで実装。入力データはサーバーに送信されません。
+          Content-Security-Policy ヘッダーを GUI で簡単に生成します。
+          各ディレクティブをON/OFFで切り替え、値を設定するだけでCSP文字列が完成します。
+          入力データはサーバーに送信されません。
         </p>
       </div>
 
@@ -122,7 +92,7 @@ export default function TextDiffPage() {
         padding: '1.5rem',
         marginBottom: '3rem',
       }}>
-        <TextDiffTool />
+        <CspGeneratorTool />
       </section>
 
       {/* 使い方 */}
@@ -136,11 +106,11 @@ export default function TextDiffPage() {
           paddingLeft: '1.5rem',
           margin: 0,
         }}>
-          <li>左側（旧テキスト）に変更前のテキストを入力します</li>
-          <li>右側（新テキスト）に変更後のテキストを入力します</li>
-          <li>「差分を計算」ボタンを押すと、2つのテキストの差分が表示されます</li>
-          <li>緑色の行（<code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'rgba(46,200,128,0.12)', padding: '1px 5px', borderRadius: '3px' }}>+</code>）が追加行、赤色の行（<code style={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: '12px', backgroundColor: 'rgba(200,80,80,0.12)', padding: '1px 5px', borderRadius: '3px' }}>-</code>）が削除行です</li>
-          <li>左側の数字が旧テキストの行番号、右側の数字が新テキストの行番号です</li>
+          <li>各ディレクティブ左端のトグルで有効・無効を切り替えます</li>
+          <li>テキスト入力欄にスペース区切りで許可するオリジンや値を入力します</li>
+          <li>よく使う値はプリセットボタンをクリックすると自動追加されます</li>
+          <li>生成されたCSPヘッダー文字列を「クリップボードにコピー」で取得します</li>
+          <li>既存のCSPヘッダーを「インポート」欄に貼り付けると設定を取り込めます</li>
         </ol>
       </section>
 
@@ -156,8 +126,8 @@ export default function TextDiffPage() {
           marginBottom: '1rem',
           lineHeight: 1.7,
         }}>
-          コアロジックはLCS（Longest Common Subsequence）アルゴリズムをJavaScriptのみで実装しています。
-          DPテーブルを構築後、バックトラックで差分を復元します。外部ライブラリは不要なので、そのままコピーしてご利用いただけます。
+          コアロジックはCSP文字列のビルドとパースのみ。セミコロン区切りで各ディレクティブを結合・分解します。
+          外部ライブラリ不要でそのままコピーしてご利用いただけます。
         </p>
         <pre style={{
           backgroundColor: '#111820',
@@ -179,24 +149,24 @@ export default function TextDiffPage() {
         <SectionHeading title="よくある使用例・注意点" count="03" />
         <div style={{ display: 'grid', gap: '1rem' }}>
           <UsageNote
-            title="コードのレビューに使う"
-            body="プルリクエストのレビュー前に、変更前後のコードをここに貼り付けて差分を確認できます。ファイル全体をコピーして比較することで、細かい変更点を見逃しにくくなります。"
+            title="最小構成から始める"
+            body="まず <code style='font-family:var(--font-jetbrains),monospace;font-size:12px;background:rgba(31,107,114,0.1);padding:1px 5px;border-radius:3px'>default-src 'self'</code> だけを有効にし、エラーを見ながら必要なディレクティブを追加していくのが安全です。最初から広い許可を与えると CSP の効果が薄れます。"
           />
           <UsageNote
-            title="設定ファイルの比較"
-            body="サーバーやアプリの設定ファイルを比較するのに便利です。本番環境と開発環境の設定差異を素早く把握できます。"
+            title="'unsafe-inline' と 'unsafe-eval' の注意"
+            body="<code style='font-family:var(--font-jetbrains),monospace;font-size:12px;background:rgba(31,107,114,0.1);padding:1px 5px;border-radius:3px'>'unsafe-inline'</code> はインラインスクリプト・スタイルを許可し、XSS対策を弱めます。代わりに <code style='font-family:var(--font-jetbrains),monospace;font-size:12px;background:rgba(31,107,114,0.1);padding:1px 5px;border-radius:3px'>nonce-xxx</code> や <code style='font-family:var(--font-jetbrains),monospace;font-size:12px;background:rgba(31,107,114,0.1);padding:1px 5px;border-radius:3px'>sha256-xxx</code> ハッシュを使いましょう。"
           />
           <UsageNote
-            title="LCSアルゴリズムの特性"
-            body="このツールはLCS（最長共通部分列）アルゴリズムを使っています。行が完全に一致するかどうかで equal / added / removed を判定します。行内の細かい文字差分（インライン差分）は表示されません。空白の違いも1行の変更として扱われます。"
+            title="Nginx / Apache での設定例"
+            body="Nginxでは <code style='font-family:var(--font-jetbrains),monospace;font-size:12px;background:rgba(31,107,114,0.1);padding:1px 5px;border-radius:3px'>add_header Content-Security-Policy &quot;生成した値&quot; always;</code> を server ブロックに追加します。Apache は <code style='font-family:var(--font-jetbrains),monospace;font-size:12px;background:rgba(31,107,114,0.1);padding:1px 5px;border-radius:3px'>Header always set Content-Security-Policy &quot;値&quot;</code> を使います。"
           />
           <UsageNote
-            title="大きなテキストの注意点"
-            body="LCSアルゴリズムは O(m×n) の時間・空間計算量があります。行数が数千行を超える大きなファイルを比較すると、ブラウザのメモリ消費が増加する場合があります。数百行以内の比較を推奨します。"
+            title="report-uri / report-to での違反収集"
+            body="本番適用前に <code style='font-family:var(--font-jetbrains),monospace;font-size:12px;background:rgba(31,107,114,0.1);padding:1px 5px;border-radius:3px'>Content-Security-Policy-Report-Only</code> ヘッダーでテストするのが推奨です。違反レポートを収集してから本番の CSP を固めましょう。"
           />
           <UsageNote
             title="プライバシーについて"
-            body="入力したテキストはブラウザ内のみで処理されます。サーバーには一切送信されないため、機密情報を含むコードや設定ファイルも安全に比較できます。"
+            body="入力した値はブラウザ内のみで処理されます。サーバーには一切送信されないため、内部ドメイン名を含む CSP 設定も安全に作成できます。"
           />
         </div>
       </section>
@@ -205,10 +175,9 @@ export default function TextDiffPage() {
       <section style={{ marginBottom: '3rem' }}>
         <SectionHeading title="関連ツール" count="04" />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <RelatedToolBadge href="/character-count" label="文字数カウンター" />
-          <RelatedToolBadge href="/regex-tester" label="正規表現テスター" />
-          <RelatedToolBadge href="/json-formatter" label="JSONフォーマッター" />
-          <RelatedToolBadge href="/text-to-table" label="テキスト → テーブル変換" />
+          <RelatedToolBadge href="/html-escape" label="HTMLエスケープ" />
+          <RelatedToolBadge href="/hash" label="ハッシュ生成" />
+          <RelatedToolBadge href="/url-encode" label="URLエンコード/デコード" />
         </div>
       </section>
 
@@ -225,7 +194,7 @@ export default function TextDiffPage() {
           MITライセンスで自由に利用・改変できます。
         </p>
         <a
-          href="https://github.com/lylgamin/tool-nest/tree/main/app/text-diff"
+          href="https://github.com/lylgamin/tool-nest/tree/main/app/csp-generator"
           target="_blank"
           rel="noopener noreferrer"
           style={{
